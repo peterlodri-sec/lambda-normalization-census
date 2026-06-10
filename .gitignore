@@ -12,5 +12,5 @@ census_progress.log
 *.smoke.json
 /tmp/
 
-# Claude Code local overrides (do not commit)
+# local agent-tool overrides (do not commit)
 .claude/settings.local.json
