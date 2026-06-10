@@ -1,0 +1,37 @@
+{
+  "name": "crabcc-autoresearch-runs",
+  "title": "crabcc-autoresearch run artifacts",
+  "description": "Per-run artifacts from the crabcc-autoresearch autonomous ML loop training a λ-term normalization classifier. Each subdirectory is one 8-hour Vast.ai run.",
+  "version": "1.0.0",
+  "licenses": [{"name": "CC-BY-4.0", "path": "../LICENSE", "title": "Creative Commons Attribution 4.0"}],
+  "sources": [{"title": "crabcc-autoresearch", "path": "https://github.com/peterlodri-sec/crabcc-autoresearch"}],
+  "contributors": [{"title": "peterlodri-sec", "role": "author"}],
+  "resources": [
+    {
+      "name": "run-meta",
+      "path": "autoresearch-*/run_meta.json",
+      "mediatype": "application/json",
+      "description": "Run metadata: gpu, provider, budget, cost, best_val_bpb, timestamp.",
+      "schema": "https://github.com/peterlodri-sec/crabcc-autoresearch/blob/main/worker/run_meta_schema.json"
+    },
+    {
+      "name": "results",
+      "path": "autoresearch-*/results.tsv",
+      "mediatype": "text/tab-separated-values",
+      "description": "Step-level training log: step, val_bpb, status per 5-minute cycle.",
+      "schema": {
+        "fields": [
+          {"name": "step",    "type": "integer", "description": "Cycle index starting at 1"},
+          {"name": "val_bpb", "type": "number",  "description": "Validation bits-per-byte; null on crash"},
+          {"name": "status",  "type": "string",  "description": "SUCCESS | REVERTED | CRASHED"}
+        ]
+      }
+    },
+    {
+      "name": "train-py",
+      "path": "autoresearch-*/train.py",
+      "mediatype": "text/x-python",
+      "description": "Final best-performing train.py at run end."
+    }
+  ]
+}
