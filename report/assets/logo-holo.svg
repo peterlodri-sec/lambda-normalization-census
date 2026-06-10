@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="crabcc AI hologram mark">
+  <title>crabcc · AI sentinel hologram</title>
+  <defs>
+    <linearGradient id="holo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7df9ff"></stop>
+      <stop offset="45%" stop-color="#36c8ff"></stop>
+      <stop offset="100%" stop-color="#ff8c42"></stop>
+    </linearGradient>
+    <linearGradient id="holoFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#36c8ff" stop-opacity="0.28"></stop>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0.10"></stop>
+    </linearGradient>
+    <radialGradient id="proj" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7df9ff" stop-opacity="0.55"></stop>
+      <stop offset="100%" stop-color="#7df9ff" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="sentinel" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="35%" stop-color="#ff8c42"></stop>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0"></stop>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.4" result="b"></feGaussianBlur>
+      <feMerge>
+        <feMergeNode in="b"></feMergeNode>
+        <feMergeNode in="SourceGraphic"></feMergeNode>
+      </feMerge>
+    </filter>
+    <pattern id="scan" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="url(#holoFill)"></rect>
+      <rect width="6" height="1.4" y="0" fill="#7df9ff" opacity="0.20"></rect>
+    </pattern>
+    <clipPath id="crabClip">
+      <path d="M 64 130 C 64 78 98 60 128 60 C 158 60 192 78 192 130 C 192 162 168 184 128 184 C 88 184 64 162 64 130 Z"></path>
+    </clipPath>
+  </defs>
+
+  
+  <ellipse cx="128" cy="232" rx="78" ry="12" fill="url(#proj)"></ellipse>
+  <g stroke="#7df9ff" stroke-width="1" opacity="0.35">
+    <line x1="58" y1="232" x2="198" y2="232"></line>
+    <line x1="72" y1="240" x2="184" y2="240"></line>
+  </g>
+
+  <g filter="url(#glow)">
+    
+    <g stroke="url(#holo)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.95">
+      <path d="M 70 140 Q 30 150 28 188"></path>
+      <path d="M 70 156 Q 24 174 36 210"></path>
+      <path d="M 80 172 Q 56 200 70 226"></path>
+      <path d="M 186 140 Q 226 150 228 188"></path>
+      <path d="M 186 156 Q 232 174 220 210"></path>
+      <path d="M 176 172 Q 200 200 186 226"></path>
+    </g>
+
+    
+    <g fill="url(#holoFill)" stroke="url(#holo)" stroke-width="2.6" stroke-linejoin="round">
+      <path d="M 60 100 Q 28 88 18 110 Q 12 124 22 138 Q 38 152 64 144 Q 60 130 68 122 Q 56 116 60 100 Z"></path>
+      <path d="M 196 100 Q 228 88 238 110 Q 244 124 234 138 Q 218 152 192 144 Q 196 130 188 122 Q 200 116 196 100 Z"></path>
+    </g>
+
+    
+    <path d="M 64 130 C 64 78 98 60 128 60 C 158 60 192 78 192 130 C 192 162 168 184 128 184 C 88 184 64 162 64 130 Z" fill="url(#holoFill)" stroke="url(#holo)" stroke-width="3"></path>
+
+    
+    <g clip-path="url(#crabClip)">
+      <rect x="48" y="56" width="160" height="132" fill="url(#scan)"></rect>
+      
+      <g stroke="#7df9ff" stroke-width="0.8" fill="none" opacity="0.5">
+        <path d="M 70 110 Q 128 100 186 110"></path>
+        <path d="M 70 130 Q 128 124 186 130"></path>
+        <path d="M 74 150 Q 128 148 182 150"></path>
+        <line x1="128" y1="60" x2="128" y2="184"></line>
+      </g>
+    </g>
+
+    
+    <g stroke="url(#holo)" stroke-width="3" stroke-linecap="round">
+      <line x1="106" y1="84" x2="106" y2="58"></line>
+      <line x1="150" y1="84" x2="150" y2="58"></line>
+    </g>
+  </g>
+
+  
+  <g>
+    <circle cx="106" cy="54" r="12" fill="url(#sentinel)"></circle>
+    <circle cx="106" cy="54" r="4.5" fill="#fff7f1"></circle>
+    <circle cx="150" cy="54" r="12" fill="url(#sentinel)"></circle>
+    <circle cx="150" cy="54" r="4.5" fill="#fff7f1"></circle>
+  </g>
+
+  
+  <line x1="92" y1="54" x2="164" y2="54" stroke="#ff8c42" stroke-width="1.4" opacity="0.7"></line>
+</svg>

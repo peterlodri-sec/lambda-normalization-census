@@ -1,0 +1,52 @@
+/* ============================================================
+   crabcc · typography tokens
+   Monospace-first: the product is a CLI. JetBrains Mono carries
+   the wordmark, UI chrome, code and data. IBM Plex Sans handles
+   long-form reading (docs, marketing prose).
+   ============================================================ */
+
+:root {
+  /* ---- Families ----------------------------------------- */
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "SFMono-Regular",
+               Menlo, Consolas, "Liberation Mono", monospace;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+               BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Wordmark + display headings use the mono at heavy weight. */
+  --font-display: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* ---- Weights --------------------------------- @kind font */
+  --fw-regular:  400; /* @kind font */
+  --fw-medium:   500; /* @kind font */
+  --fw-semibold: 600; /* @kind font */
+  --fw-bold:     700; /* @kind font */
+  --fw-black:    800; /* @kind font */
+
+  /* ---- Type scale (px / line-height) --------------------
+     Compact, terminal-leaning. 13px is the canonical UI body
+     size in the product; we anchor there.                  */
+  --text-2xs:   11px;   --lh-2xs:   1.35; /* @kind font */
+  --text-xs:    12px;   --lh-xs:    1.45; /* @kind font */
+  --text-sm:    13px;   --lh-sm:    1.5;  /* @kind font */
+  --text-base:  15px;   --lh-base:  1.6;  /* @kind font */
+  --text-md:    17px;   --lh-md:    1.55; /* @kind font */
+  --text-lg:    20px;   --lh-lg:    1.4;  /* @kind font */
+  --text-xl:    26px;   --lh-xl:    1.25; /* @kind font */
+  --text-2xl:   34px;   --lh-2xl:   1.15; /* @kind font */
+  --text-3xl:   46px;   --lh-3xl:   1.08; /* @kind font */
+  --text-4xl:   62px;   --lh-4xl:   1.02; /* @kind font */
+
+  /* ---- Letter-spacing -----------------------------------
+     Mono display gets negative tracking (the wordmark sets
+     letter-spacing:-2 at 64px). Micro-labels get positive. */
+  --tracking-tight:  -0.03em; /* @kind font */
+  --tracking-snug:   -0.01em; /* @kind font */
+  --tracking-normal:  0;       /* @kind font */
+  --tracking-wide:    0.04em; /* @kind font */
+  --tracking-caps:    0.08em; /* @kind font */
+
+  /* ---- Semantic role aliases ---------------------------- */
+  --type-eyebrow-size: var(--text-2xs);   /* UPPERCASE section tag */
+  --type-label-size:   var(--text-xs);
+  --type-ui-size:      var(--text-sm);
+  --type-body-size:    var(--text-base);
+}

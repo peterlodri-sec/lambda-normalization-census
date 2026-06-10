@@ -1,378 +1,377 @@
-/* app.js — renders window.BGK_DATA into the report. Vanilla JS + ECharts + Cytoscape + KaTeX. */
+/* ============================================================
+   research.crabcc.app — renderer
+   Reads window.DATA, injects every component, themes ECharts +
+   Cytoscape to the crabcc dark palette. Pure DOM; no framework.
+   ============================================================ */
 (function () {
   "use strict";
-  const D = window.BGK_DATA || {};
-  const $ = (id) => document.getElementById(id);
-  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
-  const fmt = (n) => (n == null ? "—" : n.toLocaleString("en-US"));
-  const COL = { acc: "#6ea8fe", acc2: "#7ee787", vio: "#d2a8ff", warn: "#ffa657", bad: "#ff7b72", good: "#56d364", mut: "#8b97a7", line: "#222c3d" };
+  const D = window.DATA;
+  const $ = (s) => document.querySelector(s);
+  const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
 
-  // ---------- KaTeX inline ----------
-  function katexAll() {
-    document.querySelectorAll(".kat").forEach((s) => {
-      try { window.katex.render(s.textContent, s, { throwOnError: false }); } catch (e) {}
-    });
-    if (window.renderMathInElement)
-      window.renderMathInElement(document.body, {
-        delimiters: [
-          { left: "$$", right: "$$", display: true },
-          { left: "$", right: "$", display: false },
-          { left: "\\(", right: "\\)", display: false }
-        ],
-        throwOnError: false
-      });
-  }
+  /* ---- crabcc dark palette (mirrors _ds dark tokens) ----- */
+  const COL = {
+    acc:   "#ff8c42",  // --crab-hot  (primary accent, dark)
+    glow:  "#ffb380",  // --crab-glow
+    crab:  "#d35400",  // --crab-500
+    ok:    "#2ecc71",  // --green-400
+    warn:  "#f6b94a",  // --amber-400
+    danger:"#e74c3c",  // --red-400
+    info:  "#5b9bd5",  // dark info
+    slate: "#cfd6dc",  // --slate-300 (graph node ink)
+    ink:   "#f2f2f2",  // text-strong
+    body:  "#e8e8e8",
+    mut:   "#8a8a8a",  // text-muted
+    faint: "#6a6a6c",  // text-faint
+    grid:  "#2a2a2c",  // hairline
+    panel: "#161618",  // surface-card
+    sunken:"#1c1c1f",
+  };
+  const FONT = "JetBrains Mono, ui-monospace, monospace";
 
-  // ---------- ECharts base ----------
-  function chart(id, option) {
-    const node = $(id); if (!node || !window.echarts) { if (node) node.innerHTML = "<div class='err' style='padding:14px'>chart lib unavailable (offline?)</div>"; return; }
-    const c = window.echarts.init(node, null, { renderer: "canvas" });
-    const base = {
+  /* ---- shared ECharts base ------------------------------ */
+  function baseOption() {
+    return {
       backgroundColor: "transparent",
-      textStyle: { color: "#cdd6e0", fontFamily: "ui-monospace,Menlo,monospace" },
-      grid: { left: 56, right: 30, top: 46, bottom: 46 },
-      tooltip: { backgroundColor: "#11151f", borderColor: COL.line, textStyle: { color: "#e6edf3" } },
-      legend: { textStyle: { color: COL.mut }, top: 6 }
+      textStyle: { fontFamily: FONT, color: COL.mut, fontSize: 11 },
+      grid: { left: 8, right: 16, top: 22, bottom: 6, containLabel: true },
+      tooltip: {
+        backgroundColor: "#0e0e10",
+        borderColor: COL.grid,
+        borderWidth: 1,
+        textStyle: { color: COL.body, fontFamily: FONT, fontSize: 12 },
+        axisPointer: { lineStyle: { color: COL.grid }, crossStyle: { color: COL.grid } },
+      },
     };
-    c.setOption(Object.assign(base, option));
-    window.addEventListener("resize", () => c.resize());
-    return c;
   }
-  const axis = (name, type) => ({
-    type: type || "value", name, nameTextStyle: { color: COL.mut },
-    axisLine: { lineStyle: { color: COL.line } }, axisLabel: { color: COL.mut },
-    splitLine: { lineStyle: { color: COL.line, type: "dashed" } }
+  const axis = (extra) => Object.assign({
+    axisLine: { lineStyle: { color: COL.grid } },
+    axisTick: { show: false },
+    axisLabel: { color: COL.mut, fontFamily: FONT, fontSize: 11 },
+    splitLine: { lineStyle: { color: COL.grid, type: "dashed", opacity: 0.5 } },
+    nameTextStyle: { color: COL.faint, fontFamily: FONT, fontSize: 10 },
+  }, extra || {});
+
+  const charts = [];
+  function mount(id, option) {
+    const host = $("#" + id);
+    if (!host) return;
+    const div = el("div", "chart-host");
+    host.appendChild(div);
+    const c = echarts.init(div, null, { renderer: "canvas" });
+    c.setOption(option);
+    charts.push(c);
+  }
+  window.addEventListener("resize", () => charts.forEach((c) => c.resize()));
+
+  const linGrad = (c1, c2) =>
+    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: c1 }, { offset: 1, color: c2 }]);
+
+  /* ====================================================== */
+  /* small builders                                          */
+  /* ====================================================== */
+  function badges(host, arr) {
+    arr.forEach((b) => host.appendChild(el("span", "badge " + (b.k || ""), b.t)));
+  }
+  function stats(host, arr) {
+    arr.forEach((s) => {
+      const card = el("div", "stat " + (s.c || ""));
+      card.appendChild(el("div", "v", s.v));
+      card.appendChild(el("div", "l", s.l));
+      host.appendChild(card);
+    });
+  }
+  function callout(host, c) {
+    host.appendChild(el("div", "h", c.h));
+    host.appendChild(el("div", "b", c.b));
+  }
+
+  /* ====================================================== */
+  /* HERO + ABSTRACT                                         */
+  /* ====================================================== */
+  $("#kicker-meta").textContent = D.meta.kicker.split("·").slice(1).join("·").trim() || D.meta.kicker;
+  $("#hero-title").textContent = D.meta.title;
+  $("#hero-sub").innerHTML = D.meta.sub;
+  badges($("#badges"), D.meta.badges);
+  callout($("#abstract-note"), D.abstract.note);
+
+  /* ====================================================== */
+  /* E1 · census                                            */
+  /* ====================================================== */
+  stats($("#e1-stats"), D.e1.stats);
+  $("#e1-note").innerHTML = D.e1.note;
+  mount("e1-chart", Object.assign(baseOption(), {
+    tooltip: Object.assign(baseOption().tooltip, {
+      trigger: "axis",
+      formatter: (p) => `size ${p[0].axisValue}<br/><b style="color:${COL.acc}">${p[0].data.toLocaleString()}</b> terms`,
+    }),
+    grid: { left: 8, right: 18, top: 28, bottom: 6, containLabel: true },
+    xAxis: axis({ type: "category", data: D.e1.census.map((d) => d[0]), name: "term size (nodes)", nameLocation: "middle", nameGap: 30, boundaryGap: true }),
+    yAxis: axis({ type: "log", name: "count (log)", nameGap: 14, splitNumber: 4 }),
+    series: [{
+      type: "bar", data: D.e1.census.map((d) => d[1]),
+      itemStyle: { color: linGrad(COL.glow, COL.crab), borderRadius: [2, 2, 0, 0] },
+      barWidth: "62%", emphasis: { itemStyle: { color: COL.acc } },
+    }],
+  }));
+
+  /* ====================================================== */
+  /* E2 · separators                                        */
+  /* ====================================================== */
+  stats($("#e2-stats"), D.e2.stats);
+  callout($("#e2-callout"), D.e2.callout);
+  mount("e2-chart", Object.assign(baseOption(), {
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis",
+      formatter: (p) => `size ${p[0].axisValue}<br/><b style="color:${COL.danger}">${p[0].data}</b> WN-but-¬SN` }),
+    xAxis: axis({ type: "category", data: D.e2.bySize.map((d) => d[0]), name: "term size", nameLocation: "middle", nameGap: 28 }),
+    yAxis: axis({ type: "value", name: "witnesses", nameGap: 12 }),
+    series: [{
+      type: "bar", data: D.e2.bySize.map((d) => d[1]),
+      itemStyle: { color: linGrad("#e74c3c", "#7d2018"), borderRadius: [2, 2, 0, 0] }, barWidth: "58%",
+    }],
+  }));
+  // samples
+  const sHost = $("#e2-samples");
+  sHost.appendChild(el("span", "pill-lbl", "samples"));
+  D.e2.samples.forEach((s) => sHost.appendChild(el("span", "tag " + (s.nsn ? "nsn" : "sn"), s.t + (s.nsn ? "  ¬SN" : "  SN"))));
+
+  /* ====================================================== */
+  /* E3 · geometry (hist + scatter)                          */
+  /* ====================================================== */
+  stats($("#e3-stats"), D.e3.stats);
+  mount("e3-chart", Object.assign(baseOption(), {
+    grid: { left: 8, right: 18, top: 36, bottom: 6, containLabel: true },
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis", axisPointer: { type: "shadow" },
+      formatter: (p) => `${p[0].axisValue} nodes<br/><b style="color:${COL.acc}">${p[0].data.toLocaleString()}</b> terms` }),
+    xAxis: axis({ type: "category", data: D.e3.hist.map((d) => d[0]), axisLabel: { color: COL.mut, fontFamily: FONT, fontSize: 10, interval: 0, rotate: 30 } }),
+    yAxis: axis({ type: "value", name: "terms", nameGap: 12 }),
+    series: [{ type: "bar", data: D.e3.hist.map((d) => d[1]),
+      itemStyle: { color: linGrad(COL.acc, "#8a3a12"), borderRadius: [2, 2, 0, 0] }, barWidth: "60%" }],
+  }));
+  mount("e3-chart2", Object.assign(baseOption(), {
+    grid: { left: 8, right: 18, top: 36, bottom: 6, containLabel: true },
+    tooltip: Object.assign(baseOption().tooltip, {
+      formatter: (p) => `shortest ${p.data[0]} · longest <b style="color:${COL.acc}">${p.data[1]}</b>` }),
+    xAxis: axis({ type: "value", name: "shortest", nameLocation: "middle", nameGap: 26 }),
+    yAxis: axis({ type: "value", name: "longest", nameGap: 16 }),
+    series: [{
+      type: "scatter", data: D.e3.scatter, symbolSize: 6,
+      itemStyle: { color: "rgba(255,140,66,0.55)", borderColor: COL.acc, borderWidth: 0.5 },
+    }],
+  }));
+
+  /* ====================================================== */
+  /* E4 · perpetual                                          */
+  /* ====================================================== */
+  stats($("#e4-stats"), D.e4.stats);
+  $("#e4-note").innerHTML = D.e4.note;
+  mount("e4-chart", Object.assign(baseOption(), {
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis",
+      formatter: (p) => `size ${p[0].axisValue}<br/>random strategy missed <b style="color:${COL.warn}">${p[0].data}%</b>` }),
+    xAxis: axis({ type: "category", boundaryGap: false, data: D.e4.perpetual.map((d) => d[0]), name: "¬SN term size", nameLocation: "middle", nameGap: 28 }),
+    yAxis: axis({ type: "value", name: "% divergence missed", nameGap: 14, max: 100 }),
+    series: [
+      { name: "perpetual F∞", type: "line", data: D.e4.perpetual.map(() => 0), symbol: "none",
+        lineStyle: { color: COL.ok, width: 2 }, areaStyle: { color: "rgba(46,204,113,0.06)" } },
+      { name: "random strategy", type: "line", smooth: true, data: D.e4.perpetual.map((d) => d[1]),
+        symbol: "circle", symbolSize: 5, itemStyle: { color: COL.warn },
+        lineStyle: { color: COL.warn, width: 2 },
+        areaStyle: { color: linGrad("rgba(246,185,74,0.25)", "rgba(246,185,74,0)") } },
+    ],
+  }));
+
+  /* ====================================================== */
+  /* E5 · ι-translation                                      */
+  /* ====================================================== */
+  stats($("#e5-stats"), D.e5.stats);
+  callout($("#e5-note"), D.e5.note);
+
+  /* ====================================================== */
+  /* E6 · speedup (lines + dist)                             */
+  /* ====================================================== */
+  stats($("#e6-stats"), D.e6.stats);
+  mount("e6-chart", Object.assign(baseOption(), {
+    grid: { left: 8, right: 18, top: 40, bottom: 6, containLabel: true },
+    legend: { top: 4, right: 8, textStyle: { color: COL.mut, fontFamily: FONT, fontSize: 10 }, itemWidth: 14, itemHeight: 8 },
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis" }),
+    xAxis: axis({ type: "category", boundaryGap: false, data: D.e6.strategy.map((d) => d.n), name: "term size", nameLocation: "middle", nameGap: 26 }),
+    yAxis: axis({ type: "log", name: "β-steps (log)", nameGap: 14 }),
+    series: [
+      { name: "innermost", type: "line", smooth: true, data: D.e6.strategy.map((d) => d.inner),
+        symbol: "none", lineStyle: { color: COL.ok, width: 2 } },
+      { name: "outermost", type: "line", smooth: true, data: D.e6.strategy.map((d) => d.outer),
+        symbol: "none", lineStyle: { color: COL.acc, width: 2 },
+        areaStyle: { color: linGrad("rgba(255,140,66,0.18)", "rgba(255,140,66,0)") } },
+    ],
+  }));
+  mount("e6-chart2", Object.assign(baseOption(), {
+    grid: { left: 8, right: 18, top: 36, bottom: 6, containLabel: true },
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis", axisPointer: { type: "shadow" },
+      formatter: (p) => `${p[0].axisValue}<br/><b style="color:${COL.acc}">${p[0].data}%</b> of terms` }),
+    xAxis: axis({ type: "category", data: D.e6.speedup.map((d) => d[0]), axisLabel: { color: COL.mut, fontFamily: FONT, fontSize: 10, interval: 0, rotate: 30 } }),
+    yAxis: axis({ type: "value", name: "% of terms", nameGap: 12 }),
+    series: [{ type: "bar", data: D.e6.speedup.map((d) => d[1]),
+      itemStyle: { color: linGrad(COL.glow, COL.crab), borderRadius: [2, 2, 0, 0] }, barWidth: "58%" }],
+  }));
+
+  /* ====================================================== */
+  /* E7 · reduction-graph zoo (cytoscape)                    */
+  /* ====================================================== */
+  $("#e7-note").innerHTML = D.e7.note;
+  const zoo = $("#zoo");
+  D.e7.cells.forEach((cell, i) => {
+    const isNsn = cell.tag === "NSN";
+    const c = el("div", "cell " + (isNsn ? "nsn" : "sn"));
+    const cap = el("div", "cap");
+    cap.appendChild(el("span", "term-name", cell.cap));
+    cap.appendChild(el("span", "tag " + (isNsn ? "nsn" : "sn"), isNsn ? "¬SN" : "SN"));
+    c.appendChild(cap);
+    const graph = el("div", "cy"); graph.id = "cy-" + i;
+    c.appendChild(graph);
+    zoo.appendChild(c);
   });
-
-  function stat(parent, n, label, cls) {
-    const s = el("div", "stat " + (cls || ""));
-    s.appendChild(el("div", "n", n));
-    s.appendChild(el("div", "l", label));
-    parent.appendChild(s);
-  }
-  function errBox(id, e) { const p = $(id); if (p) p.appendChild(el("div", "err", "⚠ experiment error: " + (e.error || ""))); }
-
-  // ========================= BADGES + ABSTRACT =========================
-  function badges() {
-    const m = D.meta || {}; const b = $("badges");
-    const items = [
-      ["status", "OPEN — TLCA #9", "open"],
-      ["cores", "<b>" + (m.cores || "?") + "</b> cores", ""],
-      ["python", "Py " + (m.python || "?"), ""],
-      ["compute", "<b>" + (m.total_seconds || "?") + "</b> s wall", ""],
-      ["budget", (m.budget_per_idea_s || "?") + "s / idea", ""],
-      ["host", "dev-cx53", ""]
-    ];
-    items.forEach(([k, v, c]) => { const x = el("span", "badge " + c, v); b.appendChild(x); });
-    const sep = (D.E2 && D.E2.onset_size) ? D.E2.onset_size : "—";
-    $("abstract-note").innerHTML = "<b>Headline:</b> across the entire exhaustive search, the erasure-free fragment never separated WN from SN, while the general calculus first did at term size <b>" + sep + "</b> — the <span class='mono'>(λx.y)Ω</span> family.";
-  }
-
-  // ========================= E1 =========================
-  function E1() {
-    const e = D.E1; if (!e) return; if (e.error) return errBox("e1-stats", e);
-    const st = $("e1-stats");
-    stat(st, fmt(e.total_terms), "λI terms checked", "acc");
-    stat(st, "≤ " + e.max_size, "max term size", "");
-    stat(st, fmt(e.total_separators), "WN-but-not-SN found", "good");
-    stat(st, "0", "expected (Conservation)", "good");
-    const rows = e.rows || [];
-    chart("e1-chart", {
-      title: { text: "λI terms by size — separators stay at 0", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" },
-      legend: { data: ["terms (log)", "separators"], top: 24 },
-      xAxis: Object.assign(axis("term size", "category"), { data: rows.map(r => r.size) }),
-      yAxis: [Object.assign(axis("# terms (log)"), { type: "log", min: 1 }), Object.assign(axis("separators"), { min: 0, max: 1 })],
-      series: [
-        { name: "terms (log)", type: "bar", data: rows.map(r => r.terms), itemStyle: { color: COL.acc, opacity: .8 } },
-        { name: "separators", type: "line", yAxisIndex: 1, data: rows.map(r => r.separators), lineStyle: { color: COL.good, width: 3 }, symbol: "circle", symbolSize: 7, itemStyle: { color: COL.good } }
-      ]
+  // build graphs after layout so containers have size
+  function buildZoo() {
+    D.e7.cells.forEach((cell, i) => {
+      const elements = [];
+      cell.nodes.forEach((n, j) => elements.push({ data: { id: n, root: j === 0 ? 1 : 0 } }));
+      cell.edges.forEach((e, k) => {
+        const loopEdge = e[0] === e[1];
+        elements.push({ data: { id: "e" + i + "_" + k, source: e[0], target: e[1], loop: loopEdge ? 1 : 0 } });
+      });
+      const isNsn = cell.tag === "NSN";
+      const cy = cytoscape({
+        container: document.getElementById("cy-" + i),
+        elements,
+        userZoomingEnabled: false, userPanningEnabled: false, boxSelectionEnabled: false, autoungrabify: true,
+        style: [
+          { selector: "node", style: {
+            "background-color": COL.slate, width: 12, height: 12,
+            label: "data(id)", color: COL.faint, "font-family": FONT, "font-size": 8,
+            "text-valign": "top", "text-halign": "center", "text-margin-y": -2,
+            "text-max-width": 80, "min-zoomed-font-size": 0,
+          } },
+          { selector: "node[root = 1]", style: {
+            "background-color": isNsn ? COL.danger : COL.ok, width: 16, height: 16,
+            "border-width": 3, "border-color": "rgba(255,140,66,0.35)", color: COL.body, "font-weight": 700,
+          } },
+          { selector: "edge", style: {
+            width: 1.4, "line-color": "#4a4a4c", "target-arrow-color": "#4a4a4c",
+            "target-arrow-shape": "triangle", "arrow-scale": 0.7, "curve-style": "bezier",
+          } },
+          { selector: "edge[loop = 1]", style: {
+            "line-color": COL.danger, "target-arrow-color": COL.danger, width: 2,
+            "curve-style": "bezier", "control-point-step-size": 26,
+          } },
+        ],
+        layout: cell.loop
+          ? { name: "circle", padding: 22, avoidOverlap: true }
+          : { name: "breadthfirst", directed: true, padding: 22, spacingFactor: 1.1 },
+      });
+      cy.resize(); cy.fit(undefined, 24);
     });
-    $("e1-note").innerHTML = "Flat green line at 0 = the Conservation Theorem holding, exhaustively, on every λI term up to size " + e.max_size + ".";
   }
 
-  // ========================= E2 =========================
-  function E2() {
-    const e = D.E2; if (!e) return; if (e.error) return errBox("e2-stats", e);
-    const rows = e.rows || [];
-    const st = $("e2-stats");
-    stat(st, e.onset_size != null ? e.onset_size : "—", "smallest separator size", "warn");
-    stat(st, fmt(rows.reduce((a, r) => a + r.terms, 0)), "λK terms checked", "acc");
-    stat(st, fmt(rows.reduce((a, r) => a + r.separators, 0)), "separators found", "vio");
-    chart("e2-chart", {
-      title: { text: "λK: separator onset at size " + (e.onset_size || "?"), left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" },
-      legend: { data: ["terms (log)", "separators (log)", "density %"], top: 24 },
-      xAxis: Object.assign(axis("term size", "category"), { data: rows.map(r => r.size) }),
-      yAxis: [Object.assign(axis("count (log)"), { type: "log", min: 1 }), Object.assign(axis("density %"), { min: 0 })],
-      series: [
-        { name: "terms (log)", type: "bar", data: rows.map(r => r.terms), itemStyle: { color: "#2d3f5e" } },
-        { name: "separators (log)", type: "bar", data: rows.map(r => r.separators || null), itemStyle: { color: COL.vio } },
-        { name: "density %", type: "line", yAxisIndex: 1, data: rows.map(r => +(100 * (r.density || 0)).toFixed(3)), lineStyle: { color: COL.warn, width: 2 }, itemStyle: { color: COL.warn }, symbolSize: 6 }
-      ]
+  /* ====================================================== */
+  /* KERNEL                                                  */
+  /* ====================================================== */
+  stats($("#k-stats"), D.kernel.stats);
+  $("#k-note").innerHTML = D.kernel.note;
+  mount("k-ext", Object.assign(baseOption(), {
+    grid: { left: 8, right: 24, top: 30, bottom: 6, containLabel: true },
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis", axisPointer: { type: "shadow" },
+      formatter: (p) => `${p[0].axisValue}<br/><b style="color:${COL.acc}">${p[0].data.toLocaleString()}</b> symbols` }),
+    xAxis: axis({ type: "value", name: "symbols", nameLocation: "middle", nameGap: 28, axisLabel: { color: COL.mut, fontFamily: FONT, fontSize: 10, formatter: (v) => v >= 1000 ? (v / 1000) + "k" : v } }),
+    yAxis: axis({ type: "category", inverse: true, data: D.kernel.byKind.map((d) => d[0]), splitLine: { show: false } }),
+    series: [{ type: "bar", data: D.kernel.byKind.map((d) => d[1]),
+      itemStyle: { color: linGrad(COL.crab, COL.glow), borderRadius: [0, 2, 2, 0] }, barWidth: "58%" }],
+  }));
+  mount("k-compare", Object.assign(baseOption(), {
+    grid: { left: 8, right: 18, top: 40, bottom: 6, containLabel: true },
+    legend: { top: 4, right: 8, textStyle: { color: COL.mut, fontFamily: FONT, fontSize: 10 }, itemWidth: 14, itemHeight: 8 },
+    tooltip: Object.assign(baseOption().tooltip, { trigger: "axis", axisPointer: { type: "shadow" },
+      formatter: (p) => p.map((s) => `${s.seriesName}: <b>${s.data.toLocaleString()}ms</b>`).join("<br/>") }),
+    xAxis: axis({ type: "category", data: D.kernel.compare.map((d) => d.q), axisLabel: { color: COL.mut, fontFamily: FONT, fontSize: 9, interval: 0, rotate: 22, width: 90, overflow: "truncate" } }),
+    yAxis: axis({ type: "log", name: "ms (log)", nameGap: 14 }),
+    series: [
+      { name: "crabcc", type: "bar", data: D.kernel.compare.map((d) => d.crabcc),
+        itemStyle: { color: COL.acc, borderRadius: [2, 2, 0, 0] }, barWidth: "30%" },
+      { name: "grep -rn", type: "bar", data: D.kernel.compare.map((d) => d.grep),
+        itemStyle: { color: "#4a4a4c", borderRadius: [2, 2, 0, 0] }, barWidth: "30%" },
+    ],
+  }));
+  // table
+  (function () {
+    const t = el("table");
+    t.innerHTML =
+      "<thead><tr><th>symbol</th><th>kind</th><th>file</th><th class='num'>refs</th><th class='num'>callers</th></tr></thead>";
+    const tb = el("tbody");
+    D.kernel.syms.forEach((s) => {
+      const tr = el("tr");
+      tr.innerHTML =
+        `<td><span class="sym">${s.name}</span></td>` +
+        `<td>${s.kind}</td>` +
+        `<td class="path">${s.file}</td>` +
+        `<td class="num">${s.refs.toLocaleString()}</td>` +
+        `<td class="num">${s.callers ? s.callers.toLocaleString() : "—"}</td>`;
+      tb.appendChild(tr);
     });
-    const box = $("e2-samples");
-    box.appendChild(el("div", "callout", "<b>On “smallest”:</b> the onset size is exact <i>for this term-size measure</i> (var=1, app/abs add 1) and our exhaustive λK enumeration — no separator exists below it. It is <b>folklore, not a published theorem</b>; the nearest published work on minimal terms is Tromp's Busy-Beaver-for-λ (BB<sub>λ</sub>). See research note 2."));
-    if (e.samples && e.samples.length) {
-      box.appendChild(el("div", "note", "Sample size-" + e.onset_size + " separators (each: an erasing λ over the non-SN Ω):"));
-      const row = el("div", "pill-row");
-      e.samples.forEach(s => row.appendChild(el("span", "tag", s)));
-      box.appendChild(row);
+    t.appendChild(tb);
+    $("#k-syms").appendChild(t);
+  })();
+
+  /* ====================================================== */
+  /* RESEARCH + METHODS + FOOTER                             */
+  /* ====================================================== */
+  D.research.cards.forEach((c) => {
+    const card = el("div", "card");
+    card.appendChild(el("h3", null, c.h));
+    card.appendChild(el("p", null, c.b));
+    const cites = el("div", "cites");
+    c.cites.forEach((ct) => cites.appendChild(el("span", "cite", ct)));
+    card.appendChild(cites);
+    $("#research-cards").appendChild(card);
+  });
+  $("#methods-body").innerHTML = D.methods;
+  $("#footer").innerHTML = D.footer;
+
+  /* ====================================================== */
+  /* KaTeX + TOC scroll-spy                                  */
+  /* ====================================================== */
+  function renderMath() {
+    document.querySelectorAll(".kat").forEach((s) => {
+      try { katex.render(s.textContent, s, { throwOnError: false, displayMode: false }); }
+      catch (e) { /* leave text */ }
+    });
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
+        throwOnError: false,
+      });
     }
   }
 
-  // ========================= E3 =========================
-  function E3() {
-    const e = D.E3; if (!e) return; if (e.error) return errBox("e3-stats", e);
-    const pts = e.points || []; const ci = {}; (e.cols || []).forEach((c, i) => ci[c] = i);
-    const st = $("e3-stats");
-    stat(st, fmt(pts.length), "SN terms sampled", "acc");
-    const maxL = pts.reduce((a, p) => Math.max(a, p[ci.longest]), 0);
-    const maxB = pts.reduce((a, p) => Math.max(a, p[ci.max_blowup]), 0);
-    stat(st, maxL, "longest reduction (steps)", "vio");
-    stat(st, maxB, "max term-size blowup", "warn");
-    chart("e3-chart", {
-      title: { text: "longest vs shortest reduction (per term)", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "item", formatter: p => "size " + p.value[0] + "<br>longest " + p.value[1] + " · shortest " + p.value[2] },
-      xAxis: axis("longest (max strategy)"), yAxis: axis("shortest (normal order)"),
-      series: [{
-        type: "scatter", symbolSize: 6,
-        data: pts.map(p => [p[ci.longest], p[ci.shortest], p[ci.size]]),
-        itemStyle: { color: COL.acc, opacity: .45 }
-      }, {
-        type: "line", data: [[0, 0], [maxL, maxL]], showSymbol: false, lineStyle: { color: COL.mut, type: "dashed" }, tooltip: { show: false }, name: "y=x"
-      }]
-    });
-    const ps = e.per_size || {};
-    const sizes = Object.keys(ps).map(Number).sort((a, b) => a - b);
-    chart("e3-chart2", {
-      title: { text: "reduction length grows with size", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, legend: { data: ["max longest", "mean longest", "max blowup"], top: 24 },
-      xAxis: Object.assign(axis("term size", "category"), { data: sizes }),
-      yAxis: axis("steps / size"),
-      series: [
-        { name: "max longest", type: "line", data: sizes.map(s => ps[s].max_longest), lineStyle: { color: COL.vio, width: 2 }, itemStyle: { color: COL.vio } },
-        { name: "mean longest", type: "line", data: sizes.map(s => ps[s].mean_longest), lineStyle: { color: COL.acc, width: 2 }, itemStyle: { color: COL.acc } },
-        { name: "max blowup", type: "line", data: sizes.map(s => ps[s].max_blowup), lineStyle: { color: COL.warn, width: 2, type: "dashed" }, itemStyle: { color: COL.warn } }
-      ]
-    });
-  }
-
-  // ========================= E4 =========================
-  function E4() {
-    const e = D.E4; if (!e) return; if (e.error) return errBox("e4-stats", e);
-    const st = $("e4-stats");
-    stat(st, fmt(e.checked), "terms tested", "acc");
-    stat(st, fmt(e.agreements), "law holds", "good");
-    stat(st, fmt(e.violations), "violations", e.violations ? "bad" : "good");
-    stat(st, e.checked ? (100 * e.agreements / e.checked).toFixed(2) + "%" : "—", "agreement", "good");
-    const rows = e.rows || [];
-    chart("e4-chart", {
-      title: { text: "(perpetual diverges) ⟺ ¬SN — cumulative agreements", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, legend: { data: ["checked", "agreements"], top: 24 },
-      xAxis: Object.assign(axis("up to size", "category"), { data: rows.map(r => r.size) }),
-      yAxis: Object.assign(axis("count (log)"), { type: "log", min: 1 }),
-      series: [
-        { name: "checked", type: "line", data: rows.map(r => r.checked), areaStyle: { color: "rgba(110,168,254,.12)" }, lineStyle: { color: COL.acc }, itemStyle: { color: COL.acc } },
-        { name: "agreements", type: "line", data: rows.map(r => r.agreements), lineStyle: { color: COL.good, width: 3 }, itemStyle: { color: COL.good } }
-      ]
-    });
-  }
-
-  // ========================= E5 =========================
-  function E5() {
-    const e = D.E5; if (!e) return; if (e.error) return errBox("e5-stats", e);
-    const st = $("e5-stats");
-    stat(st, fmt(e.checked), "λK terms translated", "acc");
-    stat(st, fmt(e.agreements), "SN(M)=SN(ι(M))", "good");
-    stat(st, fmt(e.violations), "violations", e.violations ? "bad" : "good");
-    stat(st, fmt(e.not_lambdaI), "translations ∉ λI", e.not_lambdaI ? "bad" : "good");
-    $("e5-note").innerHTML = "<b>Reading:</b> every λK term's ι-translation is a legal λI<sub>[,]</sub> term, and its strong-normalization verdict matches the original's — empirical confirmation that retaining (rather than erasing) the discarded argument transports SN faithfully. This is exactly the bridge that lets λI-conservation upgrade WN to SN.";
-  }
-
-  // ========================= E6 =========================
-  function E6() {
-    const e = D.E6; if (!e) return; if (e.error) return errBox("e6-stats", e);
-    const rows = e.rows || []; const st = $("e6-stats");
-    const top = rows[rows.length - 1] || {};
-    stat(st, fmt(e.workload), "tasks / run", "acc");
-    stat(st, (top.speedup || "—") + "×", "speedup @ " + (top.cores || "?") + " cores", "vio");
-    stat(st, top.efficiency != null ? (100 * top.efficiency).toFixed(0) + "%" : "—", "parallel efficiency", "warn");
-    chart("e6-chart", {
-      title: { text: "speedup vs cores", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, legend: { data: ["measured", "ideal"], top: 24 },
-      xAxis: Object.assign(axis("cores", "category"), { data: rows.map(r => r.cores) }),
-      yAxis: axis("speedup ×"),
-      series: [
-        { name: "measured", type: "line", data: rows.map(r => r.speedup), lineStyle: { color: COL.acc2, width: 3 }, itemStyle: { color: COL.acc2 }, symbolSize: 8 },
-        { name: "ideal", type: "line", data: rows.map(r => r.cores), lineStyle: { color: COL.mut, type: "dashed" }, symbol: "none" }
-      ]
-    });
-    chart("e6-chart2", {
-      title: { text: "wall-clock seconds", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" },
-      xAxis: Object.assign(axis("cores", "category"), { data: rows.map(r => r.cores) }),
-      yAxis: axis("seconds"),
-      series: [{ type: "bar", data: rows.map(r => r.seconds), itemStyle: { color: COL.warn, opacity: .85 } }]
-    });
-  }
-
-  // ========================= E7 zoo =========================
-  function E7() {
-    const e = D.E7; if (!e) return; const wrap = $("zoo"); if (e.error) { errBox("zoo", e); return; }
-    (e.terms || []).forEach((t, i) => {
-      const cell = el("div", "cell");
-      const cap = el("div", "cap");
-      cap.appendChild(el("span", "nm", t.name));
-      cap.appendChild(el("span", "tag " + (t.sn ? "sn" : "nsn"), t.sn ? "SN" : "¬SN"));
-      cell.appendChild(cap);
-      const cy = el("div", "cy"); cy.id = "cy" + i; cell.appendChild(cy);
-      const foot = el("div", "note"); foot.style.padding = "0 12px 10px";
-      foot.innerHTML = (t.n) + " nodes" + (t.truncated ? " (truncated)" : "") + " · WN " + (t.wn === true ? "yes" : t.wn === false ? "no" : "?");
-      cell.appendChild(foot);
-      wrap.appendChild(cell);
-      drawGraph(cy.id, t);
-    });
-  }
-  function drawGraph(id, t) {
-    const nodes = (t.nodes || []).map(n => ({ data: { id: "n" + n.id, label: n.label, nf: n.nf } }));
-    const idset = new Set(nodes.map(n => n.data.id));
-    const edges = (t.edges || []).filter(([a, b]) => idset.has("n" + a) && idset.has("n" + b))
-      .map(([a, b], i) => ({ data: { id: "e" + i, source: "n" + a, target: "n" + b } }));
-    try {
-      const cy = window.cytoscape({
-        container: document.getElementById(id),
-        elements: { nodes, edges }, userZoomingEnabled: false, userPanningEnabled: false, autoungrabify: true,
-        maxZoom: 2.2, minZoom: .15,
-        style: [
-          { selector: "node", style: { "background-color": "#2d3f5e", "width": 12, "height": 12, "border-width": 1, "border-color": "#3a4d6e" } },
-          { selector: "node[?nf]", style: { "background-color": "#56d364", "border-color": "#56d364" } },
-          { selector: "edge", style: { "width": 1.4, "line-color": "#3a4d6e", "target-arrow-color": "#3a4d6e", "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": .7 } }
-        ],
-        layout: nodes.length > 1
-          ? { name: "breadthfirst", directed: true, spacingFactor: .9, padding: 8 }
-          : { name: "grid" }
+  function scrollSpy() {
+    const links = [...document.querySelectorAll(".toc-row a")];
+    const map = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          links.forEach((l) => l.classList.remove("active"));
+          const a = map.get(en.target.id); if (a) a.classList.add("active");
+        }
       });
-      cy.ready(() => { try { cy.fit(cy.elements(), 22); if (cy.zoom() > 2.2) cy.zoom(2.2); cy.center(); } catch (e) {} });
-    } catch (err) {}
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+    document.querySelectorAll("main section").forEach((s) => obs.observe(s));
   }
 
-  // ========================= research + methods =========================
-  function research() {
-    const arr = D.RESEARCH || []; const box = $("research-cards");
-    if (!arr.length) { box.appendChild(el("div", "muted", "Research rounds pending / not attached.")); return; }
-    arr.forEach(r => {
-      const c = el("div", "card");
-      c.appendChild(el("h3", null, r.question_short || r.question || "—"));
-      c.appendChild(el("div", null, mdToHtml(r.answer_markdown || "")));
-      if (r.citations && r.citations.length) {
-        const ci = el("div", "cites", "sources:");
-        r.citations.slice(0, 6).forEach(u => { const a = el("a"); a.href = u; a.textContent = u; ci.appendChild(a); });
-        c.appendChild(ci);
-      }
-      box.appendChild(c);
-    });
+  /* ---- go ---- */
+  function init() {
+    buildZoo();
+    renderMath();
+    scrollSpy();
+    setTimeout(() => charts.forEach((c) => c.resize()), 60);
   }
-  function mdToHtml(s) {
-    // protect $$display$$ and $inline$ math from escaping/inline-formatting
-    const math = []; let i = 0;
-    s = s.replace(/\$\$[\s\S]+?\$\$|\$[^$\n]+?\$/g, m => { math.push(m); return "@@M" + (i++) + "@@"; });
-    const esc = (x) => x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const inline = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
-    const blocks = s.split(/\n{2,}/).map(b => {
-      const t = b.trim();
-      if (/^###\s+/.test(t)) return "<h5>" + inline(t.replace(/^###\s+/, "")) + "</h5>";
-      if (/^##\s+/.test(t)) return "<h4>" + inline(t.replace(/^##\s+/, "")) + "</h4>";
-      if (/^[-*]\s+/m.test(t)) {
-        const items = t.split(/\n/).filter(l => /^[-*]\s+/.test(l)).map(l => "<li>" + inline(l.replace(/^[-*]\s+/, "")) + "</li>").join("");
-        return "<ul>" + items + "</ul>";
-      }
-      return "<p>" + inline(t).replace(/\n/g, " ") + "</p>";
-    }).join("");
-    return blocks.replace(/@@M(\d+)@@/g, (_, k) => math[+k] || "");
-  }
-  function methods() {
-    const m = D.meta || {};
-    $("methods-body").innerHTML =
-      "All experiments run a stdlib-Python normalization engine: capture-avoiding β-reduction, an α-canonical (de Bruijn) bounded reduction-graph analyzer deciding <b>WN</b> (a reachable normal form) and <b>SN</b> (a β-cycle ⇒ ¬SN), the perpetual strategy, Klop's ι-translation into the extended λI<sub>[,]</sub> calculus, and exhaustive term enumeration — fanned out with <code>multiprocessing</code> across " + (m.cores || "?") + " cores on <code>dev-cx53</code>. Each idea is wall-clock-budgeted to ≤ " + (m.budget_per_idea_s || "?") + "s.<br><br>" +
-      "<b>Caveat.</b> These are experiments on the <i>untyped</i> λ-calculus. They corroborate the <i>mechanism</i> (erasure as the sole obstruction to WN⟹SN, and λI-conservation) that underlies the proven BGK sub-cases. They do <b>not</b> resolve the conjecture, which is about pure type systems and remains open (TLCA #9).";
-    $("footer").innerHTML = "Generated " + (D.generated || "") + " · engine <code>bgk_lab.py</code> · " + fmt(m.cores) + "-core run on dev-cx53 · companion to the Obsidian note <code>2026-06-10-barendregt-geuvers-klop-conjecture</code>.";
-  }
-
-  // ========================= crabcc × kernel =========================
-  function kernel() {
-    const k = D.KERNEL; if (!k) return;
-    const st = $("k-stats");
-    stat(st, (k.index.symbols / 1e6).toFixed(2) + "M", "symbols indexed", "acc");
-    stat(st, fmt(k.index.files), "files (C/H/Rust/…)", "vio");
-    stat(st, k.index.wall_s + "s", "index wall time", "warn");
-    stat(st, fmt(k.kmalloc_callers), "kmalloc call sites", "good");
-    stat(st, fmt(k.sccs), "recursion SCCs", "vio");
-    const ents = Object.entries(k.by_ext).sort((a, b) => b[1] - a[1]);
-    chart("k-ext", {
-      title: { text: "indexed files by language (crabcc " + k.crabcc_version + ")", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, grid: { left: 64, right: 24, top: 42, bottom: 38 },
-      xAxis: Object.assign(axis("files (log)"), { type: "log", min: 1 }),
-      yAxis: Object.assign(axis("", "category"), { data: ents.map(e => e[0]).reverse() }),
-      series: [{ type: "bar", data: ents.map(e => e[1]).reverse(), itemStyle: { color: COL.acc } }]
-    });
-    const ck = Object.entries(k.compare);
-    chart("k-compare", {
-      title: { text: "C support: 6.2 skips C → 6.3 parses it", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, legend: { data: ["symbols", "files"], top: 24 },
-      xAxis: Object.assign(axis("", "category"), { data: ck.map(c => c[0]) }),
-      yAxis: Object.assign(axis("count (log)"), { type: "log", min: 1 }),
-      series: [
-        { name: "symbols", type: "bar", data: ck.map(c => c[1].symbols), itemStyle: { color: COL.vio } },
-        { name: "files", type: "bar", data: ck.map(c => c[1].files), itemStyle: { color: COL.acc2 } }
-      ]
-    });
-    const box = $("k-syms");
-    box.appendChild(el("div", "note", "Canonical kernel C symbols — now resolvable to file:line:"));
-    const tbl = el("table");
-    tbl.innerHTML = "<tr><th>symbol</th><th>defs</th><th style='text-align:left'>first definition</th></tr>" +
-      k.symbols.map(s => `<tr><td>${s[0]}</td><td>${s[1]}</td><td style="text-align:left">${s[2]}</td></tr>`).join("");
-    box.appendChild(tbl);
-    $("k-note").innerHTML = "Index: " + fmt(k.index.symbols) + " symbols · " + fmt(k.index.edges) +
-      " edges · " + fmt(k.index.skipped) + " skipped (non-code) · graph " + fmt(k.graph.edges) +
-      " edges in " + k.graph.wall_s + "s. crabcc " + k.crabcc_version + " (branch " + k.branch + ") on Linux " + k.kernel + " — same tool & machine as this lab's own code-graph.";
-  }
-
-  // ========================= normalization census =========================
-  function census() {
-    const k = D.CENSUS; if (!k) return;
-    const rows = k.rows || []; const last = rows[rows.length - 1] || {};
-    const exactTerms = rows.reduce((a, r) => a + (r.method === 'exact' ? r.total : 0), 0);
-    const st = $("c-stats");
-    stat(st, k.smallest_separator ? k.smallest_separator.natural_size : "—", "smallest separator (size)", "vio");
-    stat(st, fmt(exactTerms), "terms classified exactly", "acc");
-    stat(st, (100 * (last.dens_SN_of_decided || 0)).toFixed(1) + "%", "SN of decided @ n=" + last.n, "good");
-    stat(st, (100 * (last.frac_undecided || 0)).toFixed(1) + "%", "undecided @ n=" + last.n, "warn");
-    chart("c-dens", {
-      title: { text: "class densities vs term size", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" }, legend: { data: ["SN of decided", "undecided frac"], top: 24 },
-      xAxis: Object.assign(axis("term size n", "category"), { data: rows.map(r => r.n) }),
-      yAxis: axis("fraction"),
-      series: [
-        { name: "SN of decided", type: "line", data: rows.map(r => r.dens_SN_of_decided), lineStyle: { color: COL.good, width: 2 }, itemStyle: { color: COL.good }, symbolSize: 5 },
-        { name: "undecided frac", type: "line", data: rows.map(r => r.frac_undecided), lineStyle: { color: COL.warn, width: 2 }, itemStyle: { color: COL.warn }, symbolSize: 5 }
-      ]
-    });
-    chart("c-sep", {
-      title: { text: "separator (WN∖SN) density — the novel curve", left: "center", textStyle: { color: "#cdd6e0", fontSize: 13 } },
-      tooltip: { trigger: "axis" },
-      xAxis: Object.assign(axis("term size n", "category"), { data: rows.map(r => r.n) }),
-      yAxis: axis("SEP / decided  (×10⁻³)"),
-      series: [{ type: "line", data: rows.map(r => +(1000 * (r.dens_SEP_of_decided || 0)).toFixed(4)), lineStyle: { color: COL.vio, width: 2 }, itemStyle: { color: COL.vio }, symbolSize: 6, areaStyle: { color: "rgba(210,168,255,.14)" } }]
-    });
-    const w = k.smallest_separator;
-    $("c-note").innerHTML = "<b>Smallest closed separator (size " + (w ? w.natural_size : "?") + "):</b> <span class='mono'>" + (w ? w.named : "") + "</span> = (λa.λb.b)·Ω. " +
-      "Count sequence verified = OEIS A275057. Theory: SN-density→0 in this natural-size model (Bendkowski–Grygiel–Lescanne–Zaionc 2017) — opposite to David et al. (2013, variables cost 0). The high <i>decided</i>-SN reflects a <b>decidability horizon</b>: the non-SN mass hides in the growing undecided tail. Open dataset: <code>data/census_dataset.{json,csv}</code>.";
-  }
-
-  // ---------- boot ----------
-  function boot() {
-    badges(); E1(); E2(); E3(); E4(); E5(); E6(); E7(); census(); kernel(); research(); methods(); katexAll();
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  if (document.readyState === "complete") init();
+  else window.addEventListener("load", init);
 })();

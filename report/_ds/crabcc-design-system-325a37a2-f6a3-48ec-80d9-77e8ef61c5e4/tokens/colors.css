@@ -1,0 +1,163 @@
+/* ============================================================
+   crabcc · color tokens
+   Warm terracotta "crab" brand on a near-neutral terminal canvas.
+   Derived from the CLI dashboard theme + the mascot SVG gradients.
+
+   Two layers:
+     1. Base palette  — raw, named hues (--crab-500, --slate-700, …)
+     2. Semantic aliases — role-based (--surface, --text, --accent, …)
+   Consume the SEMANTIC tokens in components; reach for the base
+   palette only when a semantic alias doesn't exist.
+
+   Theme: light is the default (:root). Dark is opt-in via
+   [data-theme="dark"] and auto-applied under prefers-color-scheme.
+   ============================================================ */
+
+:root {
+  /* ---- Base palette: crab (brand) ------------------------- */
+  --crab-50:  #fff7f1;   /* cream — banner bg top, hover wash      */
+  --crab-100: #fbe5da;   /* pale shell — banner bg bottom          */
+  --crab-200: #f5cdbb;   /* soft shell                             */
+  --crab-300: #e88a6a;   /* mascot highlight                       */
+  --crab-400: #e2703f;   /* warm mid                               */
+  --crab-500: #d35400;   /* PRIMARY accent (light)                 */
+  --crab-600: #c25c3f;   /* mascot body base                       */
+  --crab-700: #a84a30;   /* claw shadow                            */
+  --crab-800: #7d3520;   /* deep shell — wordmark ink              */
+  --crab-900: #5a2415;   /* darkest shell                          */
+  --crab-hot: #ff8c42;   /* "hot" node / accent (dark)             */
+  --crab-glow:#ffb380;   /* hot highlight                          */
+
+  /* ---- Base palette: neutral (warm-tinted graphite) ------- */
+  --neutral-0:   #ffffff;
+  --neutral-50:  #fafafa;
+  --neutral-100: #f3f3f2;
+  --neutral-200: #e3e3e3;
+  --neutral-300: #cfcfcd;
+  --neutral-400: #a8a8a6;
+  --neutral-500: #6a6a6a;
+  --neutral-600: #4a4a4a;
+  --neutral-700: #2a2a2c;
+  --neutral-800: #161618;
+  --neutral-900: #0e0e10;
+
+  /* ---- Base palette: slate (graph nodes / data ink) ------- */
+  --slate-300: #cfd6dc;
+  --slate-500: #5b7286;
+  --slate-700: #2c3e50;
+
+  /* ---- Base palette: semantic hues ------------------------ */
+  --green-500: #27ae60;  /* live / ok          */
+  --green-400: #2ecc71;
+  --amber-500: #f5a623;  /* warn               */
+  --amber-400: #f6b94a;
+  --red-500:   #c0392b;  /* error / danger     */
+  --red-400:   #e74c3c;
+  --blue-500:  #2c6fb0;  /* info / link        */
+
+  /* ========================================================
+     Semantic aliases — LIGHT (default)
+     ======================================================== */
+  --surface-page:    var(--neutral-50);   /* app background        */
+  --surface-card:    var(--neutral-0);    /* panels, cards         */
+  --surface-sunken:  var(--neutral-100);  /* inset wells, code     */
+  --surface-hover:   var(--crab-50);      /* row / control hover   */
+  --surface-inverse: var(--neutral-900);  /* terminal, tooltips    */
+
+  --text-strong:  #1a1a1a;                /* headings, primary     */
+  --text-body:    #2a2a2c;                /* body copy             */
+  --text-muted:   var(--neutral-500);     /* labels, meta, dim     */
+  --text-faint:   var(--neutral-400);     /* placeholders          */
+  --text-inverse: #f2f2f2;                /* on dark surfaces      */
+  --text-accent:  var(--crab-500);        /* links, emphasis       */
+  --text-on-accent: #ffffff;              /* on filled brand       */
+
+  --border-subtle: var(--neutral-200);    /* default hairline      */
+  --border-strong: var(--neutral-300);    /* inputs, dividers      */
+  --border-accent: var(--crab-500);       /* focus, active edge    */
+
+  --accent:        var(--crab-500);       /* primary brand action  */
+  --accent-hover:  var(--crab-600);       /* hover (darker)        */
+  --accent-press:  var(--crab-700);       /* active/press          */
+  --accent-wash:   var(--crab-50);        /* tinted backgrounds    */
+  --accent-wash-2: var(--crab-100);
+
+  --focus-ring:    color-mix(in oklch, var(--crab-500) 45%, transparent);
+
+  /* role hues (light) */
+  --ok:     var(--green-500);
+  --ok-wash:#e7f6ee;
+  --warn:   var(--amber-500);
+  --warn-wash:#fcf2dd;
+  --danger: var(--red-500);
+  --danger-wash:#fbe7e4;
+  --info:   var(--blue-500);
+  --info-wash:#e6eef6;
+
+  /* data-viz (graph dashboard) */
+  --viz-node:     var(--slate-700);
+  --viz-node-root:var(--crab-500);
+  --viz-node-hot: var(--crab-hot);
+  --viz-edge:     #b8b8b8;
+
+  color-scheme: light;
+}
+
+/* ==========================================================
+   Semantic aliases — DARK
+   Applied explicitly via [data-theme="dark"], or automatically
+   when the OS prefers dark AND no explicit light override.
+   ========================================================== */
+:root[data-theme="dark"] {
+  --surface-page:    var(--neutral-900);
+  --surface-card:    var(--neutral-800);
+  --surface-sunken:  #1c1c1f;
+  --surface-hover:   #2a1f10;
+  --surface-inverse: #000000;
+
+  --text-strong:  #f2f2f2;
+  --text-body:    #e8e8e8;
+  --text-muted:   #8a8a8a;
+  --text-faint:   #6a6a6c;
+  --text-inverse: #1a1a1a;
+  --text-accent:  var(--crab-hot);
+  --text-on-accent: #1a1208;
+
+  --border-subtle: var(--neutral-700);
+  --border-strong: #3a3a3c;
+  --border-accent: var(--crab-hot);
+
+  --accent:        var(--crab-hot);
+  --accent-hover:  var(--crab-glow);
+  --accent-press:  #e2703f;
+  --accent-wash:   #2a1f10;
+  --accent-wash-2: #34250f;
+
+  --focus-ring:    color-mix(in oklch, var(--crab-hot) 50%, transparent);
+
+  --ok:     var(--green-400);
+  --ok-wash:#0f2a1c;
+  --warn:   var(--amber-400);
+  --warn-wash:#2e2510;
+  --danger: var(--red-400);
+  --danger-wash:#2e1512;
+  --info:   #5b9bd5;
+  --info-wash:#13202e;
+
+  --viz-node:     var(--slate-300);
+  --viz-node-root:var(--crab-hot);
+  --viz-node-hot: var(--crab-glow);
+  --viz-edge:     #4a4a4c;
+
+  color-scheme: dark;
+}
+
+/* Auto dark mode: alias the OS preference onto the dark scope without
+   redeclaring tokens (keeps the token index single-sourced from
+   [data-theme="dark"] above). Authors opt a root into auto-dark by
+   leaving data-theme unset; force light with [data-theme="light"]. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+  }
+}

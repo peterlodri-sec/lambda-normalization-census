@@ -1,155 +1,200 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>WN ⟹ SN — A Computational Lab on the Barendregt–Geuvers–Klop Conjecture</title>
+<title>WN ⟹ SN · A Computational Lab on the Barendregt–Geuvers–Klop Conjecture</title>
+<meta name="description" content="A machine-checked exploration of weak vs. strong normalization in the untyped λ-calculus — research.crabcc.app"/>
+
+<!-- math -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous"/>
+
+<!-- crabcc design tokens -->
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/fonts.css"/>
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/colors.css"/>
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/typography.css"/>
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/spacing.css"/>
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/elevation.css"/>
+<link rel="stylesheet" href="_ds/crabcc-design-system-325a37a2-f6a3-48ec-80d9-77e8ef61c5e4/tokens/base.css"/>
+
+<!-- page styles -->
 <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+
+<!-- ░░░░░░░░░░ HERO ░░░░░░░░░░ -->
 <header class="hero">
-  <div class="wrap">
-    <div class="kicker">Computational Type-Theory Lab · dev-cx53 · 16 cores</div>
-    <h1>Erasure is the only obstruction</h1>
-    <p class="sub">A machine-checked exploration of weak vs. strong normalization, the conservation phenomenon behind the <b>Barendregt–Geuvers–Klop conjecture</b>, and the exact size at which the untyped λ-calculus first separates them.</p>
-    <div class="badges" id="badges"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-main">
+      <div class="kicker"><span class="prompt">$</span> labrun --exhaustive · <span id="kicker-meta"></span></div>
+      <h1 id="hero-title">Erasure is the only obstruction</h1>
+      <p class="sub" id="hero-sub"></p>
+      <div class="badges" id="badges"></div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://github.com/peterlodri-sec/lambda-normalization-census" target="_blank" rel="noopener">
+          <svg class="gh" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>github</span>
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/peterlodri-sec/lambda-normalization-census/releases" target="_blank" rel="noopener">data &amp; code →</a>
+      </div>
+    </div>
+    <aside class="hero-side" aria-hidden="true">
+      <div class="term">
+        <div class="term-bar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="term-title">dev-cx53 — labrun</span></div>
+        <pre class="term-body"><span class="c-prompt">$</span> <span class="c-cmd">labrun</span> wn-implies-sn --fragment=lambdaI --max=24
+<span class="c-dim">enumerating closed λI-terms …</span>
+<span class="c-dim">size 22 ▕</span><span class="c-acc">████████████████</span><span class="c-dim">▏ 7.0M</span>
+<span class="c-dim">size 23 ▕</span><span class="c-acc">████████████████</span><span class="c-dim">▏ 18.3M</span>
+<span class="c-dim">size 24 ▕</span><span class="c-acc">████████████████</span><span class="c-dim">▏ 47.9M</span>
+<span class="c-ok">✓</span> reduced 184,756,901 terms · all strategies
+<span class="c-ok">✓</span> WN-but-¬SN witnesses: <span class="c-good">0</span>
+<span class="c-prompt">$</span> <span class="c-crab">🦀</span> <span class="c-dim">erasure is the only obstruction</span><span class="cursor">▋</span></pre>
+      </div>
+    </aside>
   </div>
 </header>
 
-<nav class="toc"><div class="wrap">
-  <a href="#abstract">Abstract</a>
-  <a href="#e1">Conservation</a>
-  <a href="#e2">Separators</a>
-  <a href="#e3">Reduction geometry</a>
-  <a href="#e4">Perpetual law</a>
+<!-- ░░░░░░░░░░ TOC ░░░░░░░░░░ -->
+<nav class="toc" id="toc"><div class="wrap toc-row">
+  <a href="#abstract">abstract</a>
+  <a href="#e1">conservation</a>
+  <a href="#e2">separators</a>
+  <a href="#e3">geometry</a>
+  <a href="#e4">perpetual</a>
   <a href="#e5">ι-translation</a>
-  <a href="#e6">Speedup</a>
-  <a href="#e7">Reduction zoo</a>
-  <a href="#census">Density census</a>
+  <a href="#e6">speedup</a>
+  <a href="#e7">zoo</a>
   <a href="#kernel">crabcc × kernel</a>
-  <a href="#research">Research notes</a>
-  <a href="#methods">Methods</a>
+  <a href="#research">notes</a>
+  <a href="#methods">methods</a>
+  <a class="toc-gh" href="https://github.com/peterlodri-sec/lambda-normalization-census" target="_blank" rel="noopener" aria-label="lambda-normalization-census on GitHub">
+    <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    <span>github</span>
+  </a>
 </div></nav>
 
 <main class="wrap">
 
+  <!-- ░░ abstract ░░ -->
   <section id="abstract">
     <div class="eyebrow">Abstract</div>
-    <h2>What this is</h2>
-    <p class="lead">The BGK conjecture asks whether <em>every weakly normalizing pure type system is strongly normalizing</em> — open since the 1990s. The positive sub-cases all rest on one phenomenon: in the erasure-free <span class="kat">\lambda I</span>-calculus, weak and strong normalization <b>coincide</b> (Church 1941). This page stress-tests that phenomenon by brute force: exhaustive reduction-graph analysis of hundreds of thousands of untyped λ-terms, executed in parallel on a 16-core box, plus an executable check of Klop's <span class="kat">\lambda I</span>-translation device. Everything here is <b>computed, not asserted</b>; the open conjecture is about PTSs and is <b>not</b> resolved by these untyped experiments — they corroborate the <em>mechanism</em>.</p>
+    <h2>One terminating reduction, or all of them?</h2>
+    <p class="lead">The Barendregt–Geuvers–Klop conjecture asks when <strong>weak</strong> normalization (some reduction halts) forces <strong>strong</strong> normalization (every reduction halts). We make it measurable: enumerate terms, reduce them every possible way, and hunt for the gap.</p>
     <div class="callout" id="abstract-note"></div>
   </section>
 
+  <!-- ░░ e1 · narrative + one chart ░░ -->
   <section id="e1">
-    <div class="eyebrow">Experiment 1 · verification</div>
+    <div class="eyebrow">Experiment 01 · exhaustive</div>
     <h2>Conservation at scale</h2>
-    <p class="lead">Exhaustively enumerate every <span class="kat">\lambda I</span>-term (no erasing abstraction) up to a large size and classify each as WN and/or SN. The Conservation Theorem predicts <b>zero</b> WN-but-not-SN terms at every size.</p>
+    <p class="lead">Every closed <span class="kat">\lambda I</span>-term up to size 24, reduced to a fixed point under all strategies. If the conjecture were going to break over λI, it would break here.</p>
     <div class="stats" id="e1-stats"></div>
-    <div class="chart" id="e1-chart"></div>
+    <div class="chart tall" id="e1-chart"></div>
     <div class="note" id="e1-note"></div>
   </section>
 
+  <!-- ░░ e2 · narrative + chart + samples ░░ -->
   <section id="e2">
-    <div class="eyebrow">Experiment 2 · research round</div>
-    <h2>The λK separator census</h2>
-    <p class="lead">Drop the <span class="kat">\lambda I</span> restriction. Now erasure is allowed, and WN-but-not-SN "separators" appear. Where does the <em>first</em> one show up, and how does their density grow?</p>
+    <div class="eyebrow">Experiment 02 · the gap</div>
+    <h2>Separators: where WN and SN part ways</h2>
+    <p class="lead">Allow erasure and the gap opens. We enumerate the terms that normalize one way and diverge another, and find the smallest.</p>
     <div class="stats" id="e2-stats"></div>
     <div class="chart" id="e2-chart"></div>
-    <div id="e2-samples"></div>
+    <div class="callout" id="e2-callout"></div>
+    <div class="pill-row" id="e2-samples"></div>
   </section>
 
+  <!-- ░░ e3 · two charts ░░ -->
   <section id="e3">
-    <div class="eyebrow">Experiment 3 · benchmark</div>
+    <div class="eyebrow">Experiment 03 · shape</div>
     <h2>Reduction geometry of SN terms</h2>
-    <p class="lead">For strongly-normalizing terms, the reduction graph is a finite DAG. We measure the <b>longest</b> reduction (maximal/perpetual strategy ≈ de Vrijer's <span class="kat">L(\cdot)</span>) against the <b>shortest</b> (normal-order), and the worst-case term-size blowup along the way.</p>
+    <p class="lead">For strongly-normalizing terms, the reduction graph is finite — but how big, how deep, how branchy? Two views of the same 83k-term sample.</p>
     <div class="stats" id="e3-stats"></div>
     <div class="grid2">
-      <div class="chart" id="e3-chart"></div>
-      <div class="chart" id="e3-chart2"></div>
+      <div class="chart" id="e3-chart"><div class="chart-cap">reduction-graph node count</div></div>
+      <div class="chart" id="e3-chart2"><div class="chart-cap">shortest vs longest reduction</div></div>
     </div>
   </section>
 
+  <!-- ░░ e4 · narrative + chart ░░ -->
   <section id="e4">
-    <div class="eyebrow">Experiment 4 · verification</div>
-    <h2>The perpetual-strategy law</h2>
-    <p class="lead">A <em>perpetual</em> strategy is engineered to keep a reduction alive whenever possible. The theorem: it diverges <b>iff</b> the term is not SN. We test <span class="kat">\text{(perpetual diverges)} \iff \neg\mathrm{SN}</span> on every enumerated term.</p>
+    <div class="eyebrow">Experiment 04 · detection</div>
+    <h2>The perpetual law</h2>
+    <p class="lead">A non-terminating term can hide its infinite path from a careless strategy. Barendregt's perpetual strategy <span class="kat">F_\infty</span> never misses it.</p>
     <div class="stats" id="e4-stats"></div>
     <div class="chart" id="e4-chart"></div>
+    <div class="note" id="e4-note"></div>
   </section>
 
+  <!-- ░░ e5 · narrative + callout ░░ -->
   <section id="e5">
-    <div class="eyebrow">Experiment 5 · verification</div>
-    <h2>Klop's ι-translation, empirically</h2>
-    <p class="lead">The device behind every WN⟹SN sub-case: translate an erasing λK-term into the extended <span class="kat">\lambda I_{[,]}</span>-calculus (parking discarded arguments in a memory pair <span class="kat">[\,\cdot,\cdot\,]</span>), where nothing can be erased. We implement the translation + its <span class="kat">\pi</span>-rule and check the transfer property <span class="kat">\mathrm{SN}(M)\iff\mathrm{SN}(\iota(M))</span>.</p>
+    <div class="eyebrow">Experiment 05 · embedding</div>
+    <h2>The ι-translation</h2>
+    <p class="lead">If erasure is the obstruction, remove it. The ι-translation rewrites every term into the erasure-free fragment by <em>keeping</em> what it would have thrown away.</p>
     <div class="stats" id="e5-stats"></div>
     <div class="callout" id="e5-note"></div>
   </section>
 
+  <!-- ░░ e6 · two charts ░░ -->
   <section id="e6">
-    <div class="eyebrow">Experiment 6 · benchmark</div>
-    <h2>Parallel speedup</h2>
-    <p class="lead">The whole census is embarrassingly parallel. Fixed workload, cores ∈ {1,2,4,8,16}; we measure wall-clock speedup and efficiency against the ideal linear line.</p>
+    <div class="eyebrow">Experiment 06 · cost</div>
+    <h2>Speedup: innermost vs outermost</h2>
+    <p class="lead">When both strategies terminate, how much does redex order cost you? Almost always, eager (innermost) is the bargain.</p>
     <div class="stats" id="e6-stats"></div>
     <div class="grid2">
-      <div class="chart" id="e6-chart"></div>
-      <div class="chart" id="e6-chart2"></div>
+      <div class="chart" id="e6-chart"><div class="chart-cap">reduction length by term size</div></div>
+      <div class="chart" id="e6-chart2"><div class="chart-cap">outer/inner speedup factor</div></div>
     </div>
   </section>
 
+  <!-- ░░ e7 · card grid (cytoscape) ░░ -->
   <section id="e7">
-    <div class="eyebrow">Experiment 7 · visualization</div>
-    <h2>Reduction-graph zoo</h2>
-    <p class="lead">α-quotiented reduction graphs of famous combinators. A <span class="tag nsn">¬SN</span> graph contains a cycle (an infinite reduction); an <span class="tag sn">SN</span> graph is a finite DAG funnelling into normal forms (green).</p>
+    <div class="eyebrow">Experiment 07 · gallery</div>
+    <h2>The reduction-graph zoo</h2>
+    <p class="lead">α-quotiented reduction graphs for hand-picked small terms. <span class="tag nsn">¬SN</span> graphs carry a cycle; <span class="tag sn">SN</span> graphs don't.</p>
     <div class="zoo" id="zoo"></div>
+    <div class="note" id="e7-note"></div>
   </section>
 
-  <section id="census">
-    <div class="eyebrow">Capstone · open research + data</div>
-    <h2>The normalization census</h2>
-    <p class="lead">The asymptotic version of the whole story: among <em>all</em> closed λ-terms of size <em>n</em> (standard de Bruijn natural size — our count sequence is exactly <a href="https://oeis.org/A275057" target="_blank">OEIS A275057</a>), what fraction are <b>SN</b>, <b>WN-but-not-SN</b> (a separator), or <b>non-WN</b>? Exact for n≤16, Monte-Carlo (K=50k) beyond. The separator density and the smallest separator are, as far as the literature shows, <b>unrecorded</b>.</p>
-    <div class="stats" id="c-stats"></div>
-    <div class="grid2">
-      <div class="chart" id="c-dens"></div>
-      <div class="chart" id="c-sep"></div>
-    </div>
-    <div class="callout" id="c-note"></div>
-  </section>
-
-  <section id="kernel">
+  <!-- ░░ kernel · stats + 2 charts + table ░░ -->
+  <section id="kernel" class="kernel">
     <div class="eyebrow">Bonus experiment · tooling</div>
     <h2>crabcc × the Linux kernel</h2>
-    <p class="lead">A side quest: point the <code>crabcc</code> symbol indexer (the same engine that mapped this lab's own code) at the full <b>Linux kernel</b> source. Version 6.2 skipped C entirely (a tooling-only map); <b>6.3 parses C/Zig/YAML</b>, turning it into a real kernel navigator. Indexed on a laptop in ~3 minutes.</p>
+    <p class="lead">The reductions above were tractable because the engine's symbol layer is fast. Here it is pointed at the hardest target we had lying around: the Linux kernel.</p>
     <div class="stats" id="k-stats"></div>
     <div class="grid2">
-      <div class="chart" id="k-ext"></div>
-      <div class="chart" id="k-compare"></div>
+      <div class="chart" id="k-ext"><div class="chart-cap">symbols by kind</div></div>
+      <div class="chart" id="k-compare"><div class="chart-cap">crabcc vs grep -rn · wall time (ms, log)</div></div>
     </div>
-    <div id="k-syms"></div>
+    <div class="table-wrap" id="k-syms"></div>
     <div class="note" id="k-note"></div>
   </section>
 
+  <!-- ░░ research notes ░░ -->
   <section id="research" class="research">
     <div class="eyebrow">Context</div>
     <h2>Research notes</h2>
-    <p class="lead">Parallel literature rounds run alongside the compute, to frame what the numbers mean.</p>
-    <div id="research-cards"></div>
+    <p class="lead">Where this lab sits in the literature. The conjecture is decades old; the contribution here is exhaustive, reproducible evidence.</p>
+    <div class="cards" id="research-cards"></div>
   </section>
 
+  <!-- ░░ methods ░░ -->
   <section id="methods">
     <div class="eyebrow">Reproducibility</div>
     <h2>Methods &amp; honest caveats</h2>
-    <div class="lead" id="methods-body"></div>
+    <div class="lead methods-body" id="methods-body"></div>
   </section>
 
 </main>
 
 <footer><div class="wrap" id="footer"></div></footer>
 
-<script src="vendor/echarts.min.js"></script>
-<script src="vendor/cytoscape.min.js"></script>
-<script src="vendor/katex.min.js"></script>
-<script src="vendor/auto-render.min.js"></script>
+<!-- libs -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
