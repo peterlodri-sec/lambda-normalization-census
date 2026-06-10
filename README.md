@@ -79,5 +79,9 @@ Code: [MIT](LICENSE). Data & docs: [CC BY 4.0](data/LICENSE).
 
 Standing on: Church (1941); Barendregt, Bergstra, Klop, Volken; Sørensen; Geuvers; de Vrijer; David–Grygiel–Kozik–Raffalli–Theyssier–Zaionc; Bendkowski–Grygiel–Lescanne–Zaionc; Lescanne (OEIS A275057). Tooling: [`crabcc`](https://github.com/crabcc-labs/crabcc).
 
+## Newsletter & privacy
+
+Updates across crabcc, Vaked, and the research — opt-in newsletter + cross-project info at **[crabcc.app/about](https://crabcc.app/about)**. Data practices: [`PRIVACY.md`](PRIVACY.md) — minimal collection, no ad trackers, removal on request (cabotage@protonmail.com).
+
 ---
 *If this is useful for your work, [sponsorship](https://github.com/sponsors/peterlodri-sec) supports continued open compute + data.*
