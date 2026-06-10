@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: "If you use this dataset or engine, please cite it as below."
+title: "λ-Normalization Census: open data and engine for normalization geometry of the untyped λ-calculus"
+abstract: >-
+  A reproducible, dependency-free engine and open dataset classifying closed
+  untyped lambda-terms (de Bruijn natural size, OEIS A275057) as strongly
+  normalizing, weakly-but-not-strongly normalizing (separators), or
+  non-normalizing — exact for small size and Monte-Carlo beyond. Reports the
+  smallest closed WN-but-not-SN term (natural size 13) and the separator-density
+  curve, framed against the proven SN-density asymptotics, plus a companion
+  Barendregt-Geuvers-Klop conservation lab.
+type: dataset
+authors:
+  - family-names: Lodri
+    given-names: Peter
+    alias: peterlodri-sec
+repository-code: "https://github.com/peterlodri-sec/lambda-normalization-census"
+license: MIT
+license-url: "https://github.com/peterlodri-sec/lambda-normalization-census/blob/main/LICENSE"
+keywords:
+  - lambda calculus
+  - strong normalization
+  - weak normalization
+  - combinatorics of lambda terms
+  - Barendregt-Geuvers-Klop conjecture
+  - open data
+date-released: "2026-06-10"
+version: "0.1.0"
+references:
+  - type: article
+    title: "Combinatorics of lambda-terms: a natural approach"
+    authors:
+      - family-names: Bendkowski
+        given-names: Maciej
+      - family-names: Grygiel
+        given-names: Katarzyna
+      - family-names: Lescanne
+        given-names: Pierre
+      - family-names: Zaionc
+        given-names: Marek
+    journal: "Journal of Logic and Computation"
+    volume: 27
+    issue: 8
+    year: 2017
+    notes: "arXiv:1609.07593; SN-density 0 in the natural-size model"
+  - type: article
+    title: "Asymptotically almost all lambda-terms are strongly normalizing"
+    authors:
+      - family-names: David
+        given-names: René
+      - family-names: Grygiel
+        given-names: Katarzyna
+      - family-names: Kozik
+        given-names: Jakub
+      - family-names: Raffalli
+        given-names: Christophe
+      - family-names: Theyssier
+        given-names: Guillaume
+      - family-names: Zaionc
+        given-names: Marek
+    journal: "Logical Methods in Computer Science"
+    volume: 9
+    issue: 1
+    year: 2013
+    notes: "arXiv:0903.5505; SN-density 1 under the variables-cost-0 model"
+  - type: database
+    title: "OEIS A275057: number of closed lambda terms of natural size n"
+    authors:
+      - family-names: Lescanne
+        given-names: Pierre
+    year: 2016
+    url: "https://oeis.org/A275057"
