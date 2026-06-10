@@ -16,7 +16,7 @@ related:
 
 # A Normalization Census of the Untyped λ-Calculus
 
-> **One-line result.** In the standard natural-size de Bruijn model, we exhaustively (n≤16) and by Monte-Carlo (n≤90) classify closed λ-terms as **SN / WN-but-not-SN / non-WN**, confirm the closed-term count sequence is exactly **OEIS A275057**, and report the **smallest closed WN-but-not-SN term: natural size 13** — a quantity that appears undocumented in the literature. The data is consistent with the proven fact that **SN-density → 0** in this model, via a *decidability horizon*: the non-SN mass accumulates in the growing fraction of terms our bounded engine cannot decide.
+> **One-line result.** In the standard natural-size de Bruijn model, we exhaustively (n≤16) and by Monte-Carlo (n≤55) classify closed λ-terms as **SN / WN-but-not-SN / non-WN**, confirm the closed-term count sequence is exactly **OEIS A275057**, and report the **smallest closed WN-but-not-SN term: natural size 13** — a quantity that appears undocumented in the literature. The data is consistent with the proven fact that **SN-density → 0** in this model, via a *decidability horizon*: the non-SN mass accumulates in the growing fraction of terms our bounded engine cannot decide.
 
 This is the empirical capstone of the [[2026-06-10-barendregt-geuvers-klop-conjecture|BGK deep-dive]]: the BGK conjecture is about WN⟹SN in pure type systems; here we ask the *asymptotic* version in the untyped λ-calculus — **how dense are the WN-but-not-SN "separators"?**
 
@@ -39,7 +39,7 @@ Each term is classified by a **bounded, α-quotiented reduction-graph analysis**
 | **NWN** | not even weakly normalizing (no normal form) |
 | **UND** | undecided within caps |
 
-Exhaustive enumeration for $n\le 16$; uniform Monte-Carlo (rank-unranking sampler over $L(n,m)$, $K=50000$/size) for $n\in\{17,\dots,90\}$. Run on a 16-core box.
+Exhaustive enumeration for $n\le 16$; uniform Monte-Carlo (rank-unranking sampler over $L(n,m)$, $K=50000$/size) for $n\in\{17,\dots,55\}$. Run on a 16-core box.
 
 ## 3. Results
 
@@ -62,7 +62,7 @@ Two clear empirical trends as $n$ grows: the **separator (WN∖SN) fraction rise
 
 ## 4. Interpretation — the decidability horizon
 
-There is an apparent paradox: **Bendkowski–Grygiel–Lescanne–Zaionc (2017, Cor. 4) prove SN-density → 0** in *exactly this model* ("asymptotically almost every λ-term is neither strongly normalising, nor typeable, nor in normal form"), yet our *decided* SN fraction stays ≥ 99%. The resolution is honest and important: SN-ness is undecidable, and our engine can only decide the **easy** terms — overwhelmingly SN at these sizes. The non-SN mass that the theorem promises lives in the **undecided tail**, which our data shows growing monotonically with $n$. So our numbers are *consistent* with SN-density → 0; they simply cannot *witness* the asymptotic collapse directly — they map the decidable frontier and quantify the hard core. This decidability horizon is itself a finding about where the difficulty concentrates.
+There is an apparent paradox: **Bendkowski–Grygiel–Lescanne–Zaionc (2017, Cor. 4) prove SN-density → 0** in *exactly this model* ("asymptotically almost every λ-term is neither strongly normalising, nor typeable, nor in normal form"), yet our *decided* SN fraction stays ≥ 99%. The resolution is honest and important: SN-ness is undecidable, and our engine can only decide the **easy** terms — overwhelmingly SN at these sizes. The non-SN mass that the theorem promises lives in the **undecided tail**, which our data shows growing monotonically with $n$. So our numbers are *consistent* with SN-density → 0; they simply cannot *witness* the asymptotic collapse directly — they map the decidable frontier and quantify the hard core. This decidability horizon is itself a finding about where the difficulty concentrates. (Strikingly, the Monte-Carlo run *itself* became intractable at $n=70$ — per-term classification cost exploded as the undecided fraction grew — an accidental but vivid demonstration of the very horizon, so we report through $n=55$.)
 
 **The size convention controls the answer.** David–Grygiel–Kozik–Raffalli–Theyssier–Zaionc (2013, *LMCS* 9(1):2) prove the **opposite** — SN-density → **1** — but in a model where **variables cost 0** (unary-binary trees, size = inner nodes). There, variables can sit arbitrarily far from their binders for free, forcing head-normal/SN shapes; in the natural model, deep indices are expensive, so variables localize and non-SN subterms like Ω saturate almost all terms. Our census lives squarely in the latter (A275057) regime.
 

@@ -40,7 +40,7 @@ report/              self-contained interactive report (open report/index.html)
 No dependencies — just Python 3.9+ (standard library only).
 
 ```bash
-# the normalization census (exact n≤16, Monte-Carlo to n=90) — writes JSON to stdout
+# the normalization census (exact n≤16, Monte-Carlo to n=55) — writes JSON to stdout
 python3 src/debruijn_census.py census > my_census.json
 
 # rebuild the open dataset (JSON + CSV) from a run

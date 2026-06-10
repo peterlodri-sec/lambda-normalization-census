@@ -490,6 +490,52 @@
         0.001656,
         0.002458
       ]
+    },
+    {
+      "n": 45,
+      "method": "montecarlo",
+      "total": 50000,
+      "SN": 47127,
+      "SEP": 170,
+      "NWN": 223,
+      "UND": 2480,
+      "decided": 47520,
+      "dens_SN_of_total": 0.94254,
+      "dens_SN_of_decided": 0.99173,
+      "dens_SEP_of_decided": 0.00357744,
+      "dens_NWN_of_decided": 0.004693,
+      "frac_undecided": 0.0496,
+      "SN_of_decided_ci95": [
+        0.990875,
+        0.992505
+      ],
+      "SEP_of_decided_ci95": [
+        0.003079,
+        0.004156
+      ]
+    },
+    {
+      "n": 55,
+      "method": "montecarlo",
+      "total": 50000,
+      "SN": 44739,
+      "SEP": 197,
+      "NWN": 224,
+      "UND": 4840,
+      "decided": 45160,
+      "dens_SN_of_total": 0.89478,
+      "dens_SN_of_decided": 0.990678,
+      "dens_SEP_of_decided": 0.00436227,
+      "dens_NWN_of_decided": 0.00496,
+      "frac_undecided": 0.0968,
+      "SN_of_decided_ci95": [
+        0.989749,
+        0.991523
+      ],
+      "SEP_of_decided_ci95": [
+        0.003795,
+        0.005014
+      ]
     }
   ],
   "provenance": {

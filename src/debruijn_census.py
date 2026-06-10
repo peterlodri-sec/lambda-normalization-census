@@ -162,7 +162,7 @@ def run_census(ex_max, mc_plan, K, seed=12345):
 # ---------------- self-test ----------------
 if __name__ == '__main__' and len(sys.argv) > 1 and sys.argv[1] == 'census':
     run_census(ex_max=16,
-               mc_plan=[17, 18, 20, 22, 25, 28, 32, 38, 45, 55, 70, 90],
+               mc_plan=[17, 18, 20, 22, 25, 28, 32, 38, 45, 55],  # n>=70: bounded analysis too slow (decidability horizon)
                K=50000)
 elif __name__ == '__main__' and len(sys.argv) > 1 and sys.argv[1] == 'selftest':
     print("closed-term counts L(n,0), n=1..20:")

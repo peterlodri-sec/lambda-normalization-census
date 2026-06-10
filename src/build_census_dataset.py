@@ -17,6 +17,7 @@ ROWS = [
     (20,'montecarlo',50000,49596,28,161,215),(22,'montecarlo',50000,49501,31,197,271),
     (25,'montecarlo',50000,49318,55,201,426),(28,'montecarlo',50000,49195,52,196,557),
     (32,'montecarlo',50000,48861,85,236,818),(38,'montecarlo',50000,48242,98,227,1433),
+    (45,'montecarlo',50000,47127,170,223,2480),(55,'montecarlo',50000,44739,197,224,4840),
 ]
 
 # Prefer the full remote JSON if it landed (adds the n=45..90 tail)
