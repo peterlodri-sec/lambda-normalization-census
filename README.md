@@ -66,11 +66,11 @@ The census is embarrassingly parallel (`multiprocessing`); it was run on a 16-co
 
 ## Interactive report
 
-`report/index.html` is a self-contained dark-theme report (ECharts + Cytoscape + KaTeX, vendored — opens offline): the conservation experiments, the separator-density curve, the reduction-graph zoo, and a crabcc × Linux-kernel bonus panel.
+**Live:** [research.crabcc.app](https://research.crabcc.app) — the research microsite (crabcc design system). Or open `report/index.html` locally — self-contained (ECharts + Cytoscape + KaTeX vendored, opens offline): the conservation experiments, the separator-density curve, the reduction-graph zoo, and a crabcc × Linux-kernel bonus panel.
 
 ## Provenance & honesty
 
-This is **machine-assisted research**: experiments were designed, run, verified, and written up with substantial AI orchestration, then cross-checked against primary sources (cited in `docs/`). Every quantitative claim is *computed*, not asserted. We distinguish proven theorems (cited) from our empirical measurements, and we state the undecided remainder explicitly. The BGK conjecture itself remains **open**; nothing here resolves it — the experiments corroborate the *mechanism* (erasure as the obstruction to WN⟹SN).
+This is **machine-assisted research**: experiments were designed, run, verified, and written up with substantial assistance from large language models (**Claude, Gemini, NotebookLM, and DeepSeek**), then cross-checked against primary sources (cited in `docs/`). Every quantitative claim is *computed*, not asserted. We distinguish proven theorems (cited) from our empirical measurements, and we state the undecided remainder explicitly. The BGK conjecture itself remains **open**; nothing here resolves it — the experiments corroborate the *mechanism* (erasure as the obstruction to WN⟹SN).
 
 ## Citing
 
@@ -83,6 +83,14 @@ Code: [MIT](LICENSE). Data & docs: [CC BY 4.0](data/LICENSE).
 ## Acknowledgements
 
 Standing on: Church (1941); Barendregt, Bergstra, Klop, Volken; Sørensen; Geuvers; de Vrijer; David–Grygiel–Kozik–Raffalli–Theyssier–Zaionc; Bendkowski–Grygiel–Lescanne–Zaionc; Lescanne (OEIS A275057). Tooling: [`crabcc`](https://github.com/crabcc-labs/crabcc).
+
+## Links
+
+- 🔬 **Research microsite (live):** [research.crabcc.app](https://research.crabcc.app)
+- 🦀 **crabcc** — the indexing engine + newsletter: [crabcc.app](https://crabcc.app) · [about](https://crabcc.app/about)
+- 👤 **Author:** [peterl.dev](https://peterl.dev)
+- 🪙 **Sponsor:** [github.com/sponsors/peterlodri-sec](https://github.com/sponsors/peterlodri-sec)
+- 📖 **Wiki:** [project wiki](https://github.com/peterlodri-sec/lambda-normalization-census/wiki)
 
 ## Newsletter & privacy
 

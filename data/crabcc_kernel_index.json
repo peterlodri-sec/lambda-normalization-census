@@ -1,6 +1,6 @@
 {
   "crabcc_version": "6.3.0",
-  "branch": "claude/add-c-zig-markup-support-wkktv9",
+  "branch": "add-c-zig-markup-support",
   "kernel": "6.18.35 (LTS)",
   "build_seconds": 122,
   "index": {

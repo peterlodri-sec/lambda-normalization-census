@@ -193,7 +193,7 @@ How crabcc writes. Match this voice in any copy you produce.
 **Root**
 - `styles.css` — the entry point consumers link. `@import` manifest only.
 - `readme.md` — this guide.
-- `SKILL.md` — Agent-Skill manifest (for use in Claude Code etc.).
+- `SKILL.md` — Agent-Skill manifest (for use in AI coding agents).
 
 **`tokens/`** — design tokens, each `@import`ed by `styles.css`
 - `fonts.css` — `@font-face` for JetBrains Mono + IBM Plex Sans (self-hosted woff2).
