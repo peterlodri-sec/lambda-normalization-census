@@ -1,0 +1,14 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Self-test (counts vs OEIS A275057, sampler exactness, classifier)
+        run: python3 src/debruijn_census.py selftest
+      - name: BGK lab smoke (tiny budget)
+        run: python3 src/bgk_lab.py 6 > /dev/null

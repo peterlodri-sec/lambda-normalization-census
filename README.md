@@ -4,6 +4,11 @@
 [![Data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-green.svg)](data/LICENSE)
 [![OEIS A275057](https://img.shields.io/badge/OEIS-A275057-orange.svg)](https://oeis.org/A275057)
 [![deps: none](https://img.shields.io/badge/deps-stdlib%20only-success.svg)](#reproduce)
+[![CI](https://github.com/peterlodri-sec/lambda-normalization-census/actions/workflows/ci.yml/badge.svg)](https://github.com/peterlodri-sec/lambda-normalization-census/actions/workflows/ci.yml)
+[![Sponsor](https://img.shields.io/github/sponsors/peterlodri-sec?label=Sponsor&logo=githubsponsors&color=ea4aaa)](https://github.com/sponsors/peterlodri-sec)
+[![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/peterlodri-sec/lambda-normalization-census/wiki)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-purple.svg)](CODE_OF_CONDUCT.md)
 
 > A reproducible **open dataset + engine** for the *normalization geometry* of the untyped λ-calculus, built around the open **Barendregt–Geuvers–Klop (BGK) conjecture** (does weak normalization imply strong normalization in pure type systems?).
 

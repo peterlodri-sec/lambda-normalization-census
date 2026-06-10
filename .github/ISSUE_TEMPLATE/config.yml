@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion / question
+    url: https://github.com/peterlodri-sec/lambda-normalization-census/discussions
+    about: Ideas, questions, and research chat.
+  - name: 🪙 Sponsor & submit an experiment
+    url: https://github.com/sponsors/peterlodri-sec
+    about: The $25 tier — submit an experiment we run and publish as open data.
