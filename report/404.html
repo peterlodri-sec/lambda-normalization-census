@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>404 · research.crabcc.app</title>
+<script>
+// legacy paths: the site root IS the old /report/ directory
+var p = location.pathname;
+if (p.startsWith('/report')) location.replace(p.replace(/^\/report\/?/, '/') + location.search + location.hash);
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{background:#0e0e10;color:#f2f2f2;font:16px/1.6 ui-monospace,Menlo,monospace;display:grid;place-items:center;height:100vh;margin:0}a{color:#ff8c42}</style>
+</head><body><div>404 — <a href="/">back to the report</a></div></body></html>
