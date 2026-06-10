@@ -1,0 +1,32 @@
+{
+  "includeCoAuthoredBy": false,
+  "enableAllProjectMcpServers": false,
+  "cleanupPeriodDays": 30,
+  "permissions": {
+    "allow": [
+      "Bash(python3 src/debruijn_census.py:*)",
+      "Bash(python3 src/bgk_lab.py:*)",
+      "Bash(python3 src/build_census_dataset.py)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(rm:*)",
+      "Bash(gh repo delete:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/.env)",
+      "Read(./**/.env.*)",
+      "Read(./**/id_ed25519*)",
+      "Read(./**/id_rsa*)",
+      "Read(./**/*.pem)",
+      "Read(./**/credentials*)",
+      "Read(./**/*secret*)"
+    ]
+  }
+}

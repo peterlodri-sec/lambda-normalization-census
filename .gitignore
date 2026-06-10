@@ -11,3 +11,6 @@ bgk_results.json
 census_progress.log
 *.smoke.json
 /tmp/
+
+# Claude Code local overrides (do not commit)
+.claude/settings.local.json
