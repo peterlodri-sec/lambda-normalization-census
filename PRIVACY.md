@@ -1,10 +1,10 @@
 # Privacy Policy
 
-**Effective:** 2026-06-10 · **Maintained by:** Peter Lodri (`peterlodri-sec`) · **Contact:** cabotage@protonmail.com
+**Effective:** 2026-06-10 · **Maintained by:** Peter Lodri (`peterlodri-sec`) · **Contact:** cabotage@pm.me
 
 This policy covers the open-source projects under [`peterlodri-sec`](https://github.com/peterlodri-sec) — including **crabcc**, the **λ-Normalization Census**, and **Vaked** — the **crabcc.app** website, the **newsletter**, and **GitHub Sponsors** interactions. Plain language, minimal collection, no surprises.
 
-> **TL;DR** — We collect as little as possible: a newsletter email *only if you give it*, and whatever GitHub shares when you sponsor or open an issue. We never sell your data, run no ad trackers, and you can be removed at any time by emailing cabotage@protonmail.com.
+> **TL;DR** — We collect as little as possible: a newsletter email *only if you give it*, and whatever GitHub shares when you sponsor or open an issue. We never sell your data, run no ad trackers, and you can be removed at any time by emailing cabotage@pm.me.
 
 ## What we collect, and why
 
@@ -26,11 +26,11 @@ If you submit a research experiment under the Contributor tier, the **experiment
 
 ## Newsletter
 
-Opt-in only. Every email includes a one-click unsubscribe, and you can also email cabotage@protonmail.com to be removed. We use your address solely to send the updates you signed up for.
+Opt-in only. Every email includes a one-click unsubscribe, and you can also email cabotage@pm.me to be removed. We use your address solely to send the updates you signed up for.
 
 ## Your rights
 
-You may request access to, correction of, or deletion of any personal data we hold, and you may object to or withdraw consent for any processing, at any time — email **cabotage@protonmail.com**. We'll respond within 30 days. (EU/UK/California residents have these rights by law; we extend them to everyone.)
+You may request access to, correction of, or deletion of any personal data we hold, and you may object to or withdraw consent for any processing, at any time — email **cabotage@pm.me**. We'll respond within 30 days. (EU/UK/California residents have these rights by law; we extend them to everyone.)
 
 ## Processors & where data lives
 
@@ -51,7 +51,7 @@ We'll update this page and bump the effective date for material changes; signifi
 ## More info & contact
 
 - **About / newsletter / cross-project info:** https://crabcc.app/about
-- **Questions or data requests:** cabotage@protonmail.com
+- **Questions or data requests:** cabotage@pm.me
 - **Source:** https://github.com/peterlodri-sec
 
 *This policy is provided in good faith and in plain language; it is not legal advice. Have counsel review before relying on it for compliance in your jurisdiction.*

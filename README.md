@@ -81,7 +81,7 @@ Standing on: Church (1941); Barendregt, Bergstra, Klop, Volken; Sørensen; Geuve
 
 ## Newsletter & privacy
 
-Updates across crabcc, Vaked, and the research — opt-in newsletter + cross-project info at **[crabcc.app/about](https://crabcc.app/about)**. Data practices: [`PRIVACY.md`](PRIVACY.md) — minimal collection, no ad trackers, removal on request (cabotage@protonmail.com).
+Updates across crabcc, Vaked, and the research — opt-in newsletter + cross-project info at **[crabcc.app/about](https://crabcc.app/about)**. Data practices: [`PRIVACY.md`](PRIVACY.md) — minimal collection, no ad trackers, removal on request (cabotage@pm.me).
 
 ---
 *If this is useful for your work, [sponsorship](https://github.com/sponsors/peterlodri-sec) supports continued open compute + data.*

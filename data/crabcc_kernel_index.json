@@ -1,23 +1,75 @@
 {
   "crabcc_version": "6.3.0",
   "branch": "claude/add-c-zig-markup-support-wkktv9",
-  "kernel": "7.0.12",
+  "kernel": "6.18.35 (LTS)",
   "build_seconds": 122,
-  "index": {"files": 70278, "symbols": 3966764, "edges": 5464517, "skipped": 22153, "wall_s": 179.6},
-  "graph": {"callees": 682225, "callers": 603401, "edges": 3139667, "wall_s": 3.1},
-  "by_ext": {".c": 36552, ".h": 26470, ".yaml": 5451, ".sh": 1080, ".py": 354, ".rs": 345, ".csv": 11, ".yml": 8, ".md": 6, ".rb": 1},
+  "index": {
+    "files": 68875,
+    "symbols": 3872317,
+    "edges": 5324709,
+    "skipped": 21731,
+    "wall_s": 176.7
+  },
+  "graph": {
+    "callees": 669143,
+    "callers": 592020,
+    "edges": 3080967,
+    "wall_s": 3.0
+  },
+  "by_ext": {
+    ".c": 35977,
+    ".h": 26074,
+    ".yaml": 5220,
+    ".sh": 1005,
+    ".py": 333,
+    ".rs": 243,
+    ".csv": 11,
+    ".yml": 8,
+    ".md": 3,
+    ".rb": 1
+  },
   "symbols": [
-    ["kmalloc", 4, "tools/virtio/linux/kernel.h:57"],
-    ["kfree", 6, "tools/virtio/linux/kernel.h:81"],
-    ["schedule", 2, "kernel/sched/core.c:6975"],
-    ["vfs_read", 1, "fs/read_write.c:554"],
-    ["printk", 11, "tools/testing/selftests/bpf/progs/lru_bug.c:21"],
-    ["mutex_lock", 8, "tools/tracing/latency/latency-collector.c:324"]
+    [
+      "kmalloc",
+      5,
+      "tools/virtio/linux/kernel.h:56"
+    ],
+    [
+      "kfree",
+      6,
+      "tools/virtio/linux/kernel.h:80"
+    ],
+    [
+      "schedule",
+      2,
+      "tools/testing/shared/linux/kernel.h:21"
+    ],
+    [
+      "vfs_read",
+      1,
+      "fs/read_write.c:552"
+    ],
+    [
+      "printk",
+      11,
+      "tools/virtio/linux/printk.h:3"
+    ],
+    [
+      "mutex_lock",
+      7,
+      "tools/tracing/latency/latency-collector.c:324"
+    ]
   ],
-  "kmalloc_callers": 2727,
-  "sccs": 348,
+  "kmalloc_callers": 4889,
+  "sccs": 328,
   "compare": {
-    "v6.2.0 (no C)": {"files": 1780, "symbols": 23700},
-    "v6.3.0 (C/Zig/YAML)": {"files": 70278, "symbols": 3966764}
+    "v6.2.0 (skips C)": {
+      "files": 1780,
+      "symbols": 23700
+    },
+    "v6.3.0 (C/Zig/YAML)": {
+      "files": 68875,
+      "symbols": 3872317
+    }
   }
 }
