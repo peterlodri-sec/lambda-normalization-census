@@ -56,4 +56,4 @@ Self-contained (ECharts + Cytoscape + KaTeX are vendored under `report/vendor/`)
 
 - `data/census_dataset.{json,csv}` — the census (see README for the column spec).
 - `data/bgk_lab_results.json` — a full 7-experiment BGK lab run.
-- `data/crabcc_kernel_index.json` — bonus: crabcc 6.3 symbol-index stats over Linux 7.0.12.
+- `data/crabcc_kernel_index.json` — bonus: crabcc 6.3 symbol-index stats over Linux 6.18 LTS.

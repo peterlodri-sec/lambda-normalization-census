@@ -28,7 +28,7 @@ src/                 pure-stdlib Python engine (no dependencies)
 data/                open data
   census_dataset.{json,csv}   per-size SN/SEP/NWN/UND counts, densities, CIs, smallest-separator witness
   bgk_lab_results.json        full BGK lab run (7 experiments)
-  crabcc_kernel_index.json    bonus: crabcc symbol-index stats of Linux 7.0.12
+  crabcc_kernel_index.json    bonus: crabcc symbol-index stats of Linux 6.18 LTS
 docs/                research notes (fully cited)
   normalization-census.md
   bgk-conjecture-deep-dive.md
