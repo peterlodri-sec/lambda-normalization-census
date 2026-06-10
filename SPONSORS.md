@@ -63,3 +63,28 @@ Goal 2 (stretch) — $2,000/mo · "Open research, part-time"
 - [ ] Confirm `.github/FUNDING.yml` (`github: [peterlodri-sec]`) — already in this repo
 - [ ] Link newsletter ([crabcc.app/about](https://crabcc.app/about)) + [privacy policy](PRIVACY.md)
 - [ ] (optional) upload the banner image
+
+## Tier welcome messages (paste per tier in the dashboard)
+
+> These are GitHub's own thank-you channel — shown immediately and emailed by
+> GitHub, so they reach sponsors whose emails are private. The webhook
+> (crabcc.app/api/sponsors-webhook) additionally sends the full crabcc-styled
+> welcome email automatically when a sponsor's email is public.
+
+**🌱 Supporter ($5):**
+Thank you! 🦀 You're keeping independent open-source + open research running. Your name goes into BACKERS.md with the next release, and you'll get the sponsors-only dev-log. Reply on GitHub or write cabotage@pm.me — it lands in my real inbox.
+
+**🔧 Contributor ($25):**
+Thank you! 🦀 Your experiment slot is live: open an issue titled "experiment: <your idea>" on lambda-normalization-census (or email cabotage@pm.me) and I'll run it on the cluster in the next weekly batch — open data + write-up, credited to you. Plus priority triage and roadmap voting.
+
+**🏗️ Backer ($100):**
+Thank you! 🦀 You now have early access to new datasets and releases, and your name/handle goes into the crabcc & Vaked READMEs (tell me how you'd like to be credited — or if you'd rather stay invisible). Everything from the lower tiers included.
+
+**🚀 Sponsor ($500):**
+Thank you — seriously. 🦀 This tier materially funds the roadmap. Email cabotage@pm.me to set up your monthly office hour, and bring opinions: direction input on crabcc/Vaked is the perk.
+
+**🤝 Partner ($2,500, orgs):**
+Thank you! 🦀 Let's get your logo onto crabcc + Vaked and set up the quarterly call — email cabotage@pm.me with your logo assets and a couple of time slots. You'll be credited in every release.
+
+**☕ Tip (one-time):**
+Thank you! That's a compute hour 🦀 — it will literally run something. Watch social.crabcc.app to see the bots report what the cluster is doing.
