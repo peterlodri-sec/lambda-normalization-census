@@ -1,0 +1,156 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "cr": "http://mlcommons.org/croissant/1.0/",
+    "dct": "http://purl.org/dc/terms/",
+    "sc": "https://schema.org/"
+  },
+  "@type": "sc:Dataset",
+  "@id": "https://github.com/peterlodri-sec/lambda-normalization-census",
+  "name": "lambda-normalization-census",
+  "description": "A reproducible, dependency-free engine and open dataset classifying closed untyped lambda-terms (de Bruijn natural size, OEIS A275057) as strongly normalizing (SN), weakly-but-not-strongly normalizing / separating (SEP), or non-normalizing (NWN / UND). Exact enumeration for small sizes; Monte-Carlo sampling beyond. Includes a companion Barendregt-Geuvers-Klop conservation lab, autoresearch training artifacts, and the separator-density curve.",
+  "url": "https://github.com/peterlodri-sec/lambda-normalization-census",
+  "license": "https://opensource.org/licenses/MIT",
+  "version": "0.1.0",
+  "datePublished": "2026-06-10",
+  "keywords": [
+    "lambda calculus",
+    "strong normalization",
+    "weak normalization",
+    "combinatorics of lambda terms",
+    "Barendregt-Geuvers-Klop conjecture",
+    "open data",
+    "machine learning",
+    "autonomous research"
+  ],
+  "creator": {
+    "@type": "Person",
+    "name": "Peter Lodri",
+    "url": "https://github.com/peterlodri-sec"
+  },
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "census-csv",
+      "name": "census_dataset.csv",
+      "description": "Exact + Monte-Carlo normalization census for closed λ-terms by de Bruijn natural size. One row per (size, method) pair.",
+      "contentUrl": "data/census_dataset.csv",
+      "encodingFormat": "text/csv",
+      "sha256": "pending"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "census-json",
+      "name": "census_dataset.json",
+      "description": "Same census data as JSON (list of records, same schema).",
+      "contentUrl": "data/census_dataset.json",
+      "encodingFormat": "application/json",
+      "sha256": "pending"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "bgk-lab",
+      "name": "bgk_lab_results.json",
+      "description": "Barendregt-Geuvers-Klop conservation conjecture experiment results: checked combinators, witness terms, and conservation status.",
+      "contentUrl": "data/bgk_lab_results.json",
+      "encodingFormat": "application/json",
+      "sha256": "pending"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "census-records",
+      "name": "census_records",
+      "description": "Normalization statistics per λ-term size and enumeration method.",
+      "source": { "@id": "census-csv" },
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/n",
+          "name": "n",
+          "description": "De Bruijn natural size of the closed λ-terms enumerated.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/method",
+          "name": "method",
+          "description": "Enumeration method: 'exact' (exhaustive) or 'monte_carlo' (sampled).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/total",
+          "name": "total",
+          "description": "Total number of closed λ-terms of size n examined.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/SN",
+          "name": "SN",
+          "description": "Count of strongly normalizing terms.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/SEP",
+          "name": "SEP",
+          "description": "Count of weakly-but-not-strongly normalizing / separating terms.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/NWN",
+          "name": "NWN",
+          "description": "Count of non-weakly-normalizing terms.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/UND",
+          "name": "UND",
+          "description": "Count of undecided terms (computation timed out).",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/decided",
+          "name": "decided",
+          "description": "Count of terms with a definitive classification (SN + SEP + NWN).",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/dens_SN_of_total",
+          "name": "dens_SN_of_total",
+          "description": "SN density over all examined terms (SN / total).",
+          "dataType": "sc:Float"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/dens_SN_of_decided",
+          "name": "dens_SN_of_decided",
+          "description": "SN density over decided terms only (SN / decided).",
+          "dataType": "sc:Float"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/dens_SEP_of_decided",
+          "name": "dens_SEP_of_decided",
+          "description": "SEP density over decided terms (SEP / decided).",
+          "dataType": "sc:Float"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "census-records/frac_undecided",
+          "name": "frac_undecided",
+          "description": "Fraction of undecided terms (UND / total).",
+          "dataType": "sc:Float"
+        }
+      ]
+    }
+  ]
+}

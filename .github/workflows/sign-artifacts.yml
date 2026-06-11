@@ -1,0 +1,57 @@
+name: Sign dataset artifacts
+
+# Triggered whenever push_dataset.py commits new autoresearch run files.
+# Signs run_meta.json for each new run using Sigstore keyless signing —
+# identity is the GitHub Actions OIDC token (no private key required).
+# Bundles (.sigstore) are committed back alongside the artifacts.
+
+on:
+  push:
+    paths:
+      - "data/autoresearch/*/run_meta.json"
+
+permissions:
+  contents: write    # to commit the .sigstore bundles back
+  id-token: write    # required for keyless OIDC signing via Sigstore
+
+jobs:
+  sign:
+    name: Sign run_meta.json with cosign
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need HEAD and HEAD~ to detect new files
+
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Find newly added run_meta.json files
+        id: find
+        run: |
+          # Collect run_meta.json paths added in the triggering commit
+          files=$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'data/autoresearch/*/run_meta.json')
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$files" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Sign each run_meta.json
+        if: steps.find.outputs.files != ''
+        run: |
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "Signing $f …"
+            cosign sign-blob \
+              --yes \
+              --bundle "${f}.sigstore" \
+              "$f"
+            echo "  → ${f}.sigstore"
+          done <<< "${{ steps.find.outputs.files }}"
+
+      - name: Commit .sigstore bundles
+        if: steps.find.outputs.files != ''
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/autoresearch/**/*.sigstore
+          git diff --cached --quiet || git commit -m "chore: sign run_meta.json artifacts [skip ci]"
+          git push
